@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import Text from "../../components/Generic/Text";
 import { useSnackbar } from "notistack";
 import axios from "../../api/axios";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 
 const columns = [
   { field: "id", headerName: "ID", width: 90 },
@@ -38,35 +39,68 @@ const Students = () => {
   const [posting, setPosting] = useState(false);
   const [students, setStudents] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    let mounted = true;
-    const controller = new AbortController();
+  // react-query get ll students
 
-    const fetchStudents = async () => {
-      try {
-        const response = await axios.get("/api/v1/students", {
-          signal: controller.signal,
-        });
-        const tableData = response.data.found.map((row, i) => ({
+  const {
+    isLoading,
+    isFetching,
+    refetch: fetchStudents,
+  } = useQuery(
+    "query-students",
+    async () => {
+      return await axios.get(`/api/v1/students`);
+    },
+    {
+      onSuccess: (res) => {
+        console.log(res);
+        const tableData = res.data.found.map((row, i) => ({
           id: i + 1,
           firstName: row.firstName,
           lastName: row.lastName,
           class: row.class,
         }));
-        mounted && setStudents(tableData);
-      } catch (err) {
-        console.error(err.response || err.request);
-      }
-    };
+        setStudents(tableData);
+        setPosting(false);
+      },
+      onError: (err) => {
+        const statusCode = err.response.status;
+        const statusText = err.response.statusText;
+        setPosting(false);
+        enqueueSnackbar(statusText, {
+          variant: "error",
+        });
+      },
+    }
+  );
 
-    fetchStudents();
-
-    return () => {
-      mounted = false;
-      controller.abort();
-    };
-  }, [posting]);
+  // react-query post student
+  const { mutate: postStudent } = useMutation(
+    async (studentData) => {
+      return await axios.post("/api/v1/students", studentData);
+    },
+    {
+      onSuccess: (res) => {
+        console.log(res);
+        enqueueSnackbar(res.statusText, {
+          variant: "success",
+        });
+        resetForm();
+        setPosting(false);
+        setAddNewDialogOpen(false);
+        queryClient.invalidateQueries("query-students");
+      },
+      onError: (err) => {
+        const statusCode = err.response.status;
+        const statusText = err.response.statusText;
+        setPosting(false);
+        enqueueSnackbar(statusText, {
+          variant: "error",
+        });
+      },
+    }
+  );
 
   const handleSaveStudent = async () => {
     if (firstName === "" || lastName === "") {
@@ -74,23 +108,12 @@ const Students = () => {
         variant: "warning",
       });
     } else {
-      console.log(firstName, lastName, studentClass);
       setPosting(true);
-      try {
-        const response = await axios.post("/api/v1/students", {
-          firstName,
-          lastName,
-          class: studentClass,
-        });
-        console.log(response);
-        resetForm();
-        setPosting(false);
-        setAddNewDialogOpen(false);
-        enqueueSnackbar(response.statusText, { variant: "success" });
-      } catch (err) {
-        console.log(err.response || err.request);
-        setPosting(false);
-      }
+      postStudent({
+        firstName,
+        lastName,
+        class: studentClass,
+      });
     }
   };
 
@@ -99,8 +122,6 @@ const Students = () => {
     setLastName("");
     setStudentClass("");
   };
-
-  console.log(students);
 
   return (
     <div>

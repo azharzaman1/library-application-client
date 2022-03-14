@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import axios from "../../api/axios";
 import Dialog from "../../components/Generic/Dialog";
 import Heading from "../../components/Generic/Heading";
@@ -26,12 +27,12 @@ const columns = [
   {
     field: "name",
     headerName: "Book Name",
-    width: 150,
+    width: 230,
   },
   {
     field: "author",
     headerName: "Book Author",
-    width: 150,
+    width: 200,
   },
   {
     field: "isBorrowed",
@@ -67,16 +68,23 @@ const Books = () => {
   const [books, setBooks] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
 
-  useEffect(() => {
-    let mounted = true;
-    const controller = new AbortController();
+  const queryClient = useQueryClient();
 
-    const fetchStudents = async () => {
-      try {
-        const response = await axios.get("/api/v1/books", {
-          signal: controller.signal,
-        });
-        const tableData = response.data.found.map((row, i) => ({
+  // react-query get ll students
+
+  const {
+    isLoading,
+    isFetching,
+    refetch: fetchBooks,
+  } = useQuery(
+    "query-books",
+    async () => {
+      return await axios.get(`/api/v1/books`);
+    },
+    {
+      onSuccess: (res) => {
+        console.log(res);
+        const tableData = res.data.found.map((row, i) => ({
           id: i + 1,
           name: row.name,
           author: row.author,
@@ -85,19 +93,46 @@ const Books = () => {
           borrowedOn: row.borrowedBy ? parseISOString(row.borrowedOn) : "-", // if borrowed only then date
           returnDate: row.borrowedBy ? parseISOString(row.returnDate) : "-", // if borrowed only then date
         }));
-        mounted && setBooks(tableData);
-      } catch (err) {
-        console.error(err.response || err.request);
-      }
-    };
+        setBooks(tableData);
+        setPosting(false);
+      },
+      onError: (err) => {
+        const statusCode = err.response.status;
+        const statusText = err.response.statusText;
+        setPosting(false);
+        enqueueSnackbar(statusText, {
+          variant: "error",
+        });
+      },
+    }
+  );
 
-    fetchStudents();
-
-    return () => {
-      mounted = false;
-      controller.abort();
-    };
-  }, [posting]);
+  // react-query post student
+  const { mutate: postBook } = useMutation(
+    async (bookData) => {
+      return await axios.post("/api/v1/books", bookData);
+    },
+    {
+      onSuccess: (res) => {
+        console.log(res);
+        enqueueSnackbar(res.statusText, {
+          variant: "success",
+        });
+        resetForm();
+        setPosting(false);
+        setAddNewDialogOpen(false);
+        queryClient.invalidateQueries("query-books");
+      },
+      onError: (err) => {
+        const statusCode = err.response.status;
+        const statusText = err.response.statusText;
+        setPosting(false);
+        enqueueSnackbar(statusText, {
+          variant: "error",
+        });
+      },
+    }
+  );
 
   const handleSaveBook = async () => {
     if (name === "" || author === "") {
@@ -106,25 +141,14 @@ const Books = () => {
       });
     } else {
       setPosting(true);
-      try {
-        const response = await axios.post("/api/v1/books", {
-          name,
-          author,
-          isBorrowed: available,
-          borrowedBy,
-          borrowedOn: available ? "" : borrowedOn,
-          returnDate: available ? "" : returnDate,
-        });
-
-        console.log(response);
-        resetForm();
-        setPosting(false);
-        setAddNewDialogOpen(false);
-        enqueueSnackbar(response.statusText, { variant: "success" });
-      } catch (err) {
-        console.log(err.response || err.request);
-        setPosting(false);
-      }
+      postBook({
+        name,
+        author,
+        isBorrowed: available,
+        borrowedBy,
+        borrowedOn: available ? "" : borrowedOn,
+        returnDate: available ? "" : returnDate,
+      });
     }
   };
 
@@ -136,8 +160,6 @@ const Books = () => {
     setBorrowedOn(new Date());
     setReturnDate(new Date());
   };
-
-  console.log(books);
 
   const handleAvailableChange = (e) => {
     setAvailable(e.target.checked);
