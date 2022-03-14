@@ -1,4 +1,5 @@
-import { Button, Divider } from "@mui/material";
+import { AddAlert, Delete, Edit, VisibilityOff } from "@mui/icons-material";
+import { Button, Divider, Grid, IconButton, Tooltip } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
@@ -61,60 +62,98 @@ const Book = () => {
       <Container maxWidth={false}>
         <div className="">
           <div
-            className="w-full h-80 rounded-md bg-gray-200 background-po"
+            className="relative w-full h-80 rounded-md bg-gray-200 mb-3 bg-center bg-no-repeat"
             style={{
-              backgroundImage: `url('/banner.jpg')`,
+              backgroundImage: `url('https://i.ibb.co/zrwjbvm/banner.jpg')`,
             }}
-          />
+          >
+            <div className="flex items-center px-1 space-x-3 bg-white bg-opacity-60 absolute top-1 right-1 rounded-full">
+              <Tooltip title="Delete">
+                <IconButton>
+                  <Delete fontSize="small" />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Edit">
+                <IconButton>
+                  <Edit fontSize="small" />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Hide">
+                <IconButton>
+                  <VisibilityOff fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </div>
+          </div>
           {/* Details */}
-
-          <div className="mt-3 flex flex-col lg:flex-row lg:items-start lg:space-x-3 px-4 lg:px-6">
-            <div className="flex space-x-3 items-start flex-1">
-              <div className="bg-gray-100 rounded-md shadow-md p-2">
+          <Grid
+            container
+            rowSpacing={3}
+            columnSpacing={2}
+            justifyContent={isBorrowed ? "center" : "start"}
+          >
+            <Grid item xs={4} sm={4} md={2}>
+              <div className="bg-gray-200 rounded-md shadow-md p-2">
                 <img
                   src="https://m.media-amazon.com/images/I/61gS6EWmWwL.jpg"
                   alt={book.name}
-                  className="w-48 md:w-64 rounded-md"
+                  className="w-full rounded-md"
                 />
               </div>
-              <div className="max-w-md flex-1 flex flex-col px-3 py-3 border-2 rounded-md border-gray-100 bg-primary bg-opacity-25 shadow-sm self-stretch">
+            </Grid>
+            <Grid item xs={8} sm={8} md={5}>
+              <div className="flex flex-col px-3 py-3 border-2 rounded-md border-gray-100 bg-primary bg-opacity-25 lg:max-w-md shadow-sm">
                 <Heading type="secondary">{book.name}</Heading>
                 <Heading type="tertiary" className="mt-2">
                   {book.author} (Author)
                 </Heading>
-                <Text className="max-w-xs mt-3 mb-5">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos
-                  eveniet maxime soluta consectetur eligendi possimus sint vel
-                  debitis, laboriosam aliquam.
+                <Text className="mt-3 mb-5">
+                  One of the most dynamic and globally recognized entertainment
+                  forces of our time opens up fully about his life, in a brave
+                  and inspiring book that traces his learning curve to a place
+                  where outer success, inner happiness.
                 </Text>
                 <Button variant="outlined" disabled={isBorrowed}>
                   {isBorrowed && "Sorry, Not "}Available,
                   {!isBorrowed && " Book Now"}
                 </Button>
+                {isBorrowed && (
+                  <div className="mt-2 w-full">
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      startIcon={<AddAlert />}
+                    >
+                      Let me know when available
+                    </Button>
+                  </div>
+                )}
               </div>
-            </div>
+            </Grid>
             {isBorrowed && (
-              <div className="mt-5 w-[400px] max-w-md md:mt-0 flex flex-col px-2 py-3 border-2 rounded-md border-gray-200 bg-gray-100 shadow-sm self-stretch">
-                <Heading type="secondary">Borrow History</Heading>
-                <Divider className="py-1" />
-                <Heading type="tertiary" className="mt-2">
-                  Current:
-                </Heading>
-                <div className="flex items-center space-x-3 mt-3">
-                  <h2>Student: </h2>
-                  <Text bold>{book.borrowedBy}</Text>
+              <Grid item xs={12} sm={10} md={5}>
+                <div className="flex flex-col px-2 py-3 border-2 rounded-md border-gray-200 bg-gray-100 shadow-sm lg:max-w-sm">
+                  <Heading type="secondary">Borrow History</Heading>
+                  <Divider className="py-1" />
+                  <Heading type="tertiary" className="mt-2">
+                    Current:
+                  </Heading>
+                  <div className="flex items-center space-x-3 mt-3">
+                    <h2>Student: </h2>
+                    <Text bold>{book.borrowedBy}</Text>
+                  </div>
+                  <div className="flex items-center space-x-3 mt-3">
+                    <h2>Borrowed On:</h2>
+                    <Text bold>{parseISOString(book.borrowedOn)}</Text>
+                  </div>
+                  <div className="flex items-center space-x-3 mt-3">
+                    <h2>Return Date(expected):</h2>
+                    <Text bold>{parseISOString(book.returnDate)}</Text>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-3 mt-3">
-                  <h2>Borrowed On:</h2>
-                  <Text bold>{parseISOString(book.borrowedOn)}</Text>
-                </div>
-                <div className="flex items-center space-x-3 mt-3">
-                  <h2>Return Date(expected):</h2>
-                  <Text bold>{parseISOString(book.returnDate)}</Text>
-                </div>
-              </div>
+              </Grid>
             )}
-          </div>
+          </Grid>
         </div>
       </Container>
     </div>
