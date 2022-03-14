@@ -4,32 +4,12 @@ import Heading from "../../components/Generic/Heading";
 import Container from "../../components/Generic/Layout/Container";
 import StudentsTable from "../../components/Generic/Table";
 import Dialog from "../../components/Generic/Dialog";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Text from "../../components/Generic/Text";
 import { useSnackbar } from "notistack";
 import axios from "../../api/axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-
-const columns = [
-  { field: "id", headerName: "ID", width: 90 },
-  {
-    field: "firstName",
-    headerName: "First name",
-    width: 150,
-    editable: true,
-  },
-  {
-    field: "lastName",
-    headerName: "Last name",
-    width: 150,
-    editable: true,
-  },
-  {
-    field: "class",
-    headerName: "Class",
-    width: 160,
-  },
-];
+import { studentsTableColumns } from "../../static/studentsTableColumns";
 
 const Students = () => {
   const [addNewDialogOpen, setAddNewDialogOpen] = useState(false);
@@ -151,8 +131,9 @@ const Students = () => {
         </Box>
         <main className="mt-2">
           <StudentsTable
-            columns={columns}
+            columns={studentsTableColumns}
             tableData={students}
+            loading={isLoading}
             onRowClick={(e) => console.log(e)}
           />
         </main>

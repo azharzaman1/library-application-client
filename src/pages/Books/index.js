@@ -11,50 +11,16 @@ import {
   Toolbar,
 } from "@mui/material";
 import { useSnackbar } from "notistack";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import axios from "../../api/axios";
 import Dialog from "../../components/Generic/Dialog";
 import Heading from "../../components/Generic/Heading";
 import Container from "../../components/Generic/Layout/Container";
-
 import StudentsTable from "../../components/Generic/Table";
 import Text from "../../components/Generic/Text";
+import { bookTableColumns } from "../../static/booksTableColumns";
 import { parseISOString } from "../../theming";
-
-const columns = [
-  { field: "id", headerName: "ID", width: 90 },
-  {
-    field: "name",
-    headerName: "Book Name",
-    width: 230,
-  },
-  {
-    field: "author",
-    headerName: "Book Author",
-    width: 200,
-  },
-  {
-    field: "isBorrowed",
-    headerName: "Available",
-    width: 160,
-  },
-  {
-    field: "borrowedBy",
-    headerName: "Borrowed By",
-    width: 160,
-  },
-  {
-    field: "borrowedOn",
-    headerName: "Borrow Date",
-    width: 200,
-  },
-  {
-    field: "returnDate",
-    headerName: "Return Date(expected)",
-    width: 200,
-  },
-];
 
 const Books = () => {
   const [addNewDialogOpen, setAddNewDialogOpen] = useState(false);
@@ -192,7 +158,12 @@ const Books = () => {
           </AppBar>
         </Box>
         <main className="mt-2">
-          <StudentsTable columns={columns} tableData={books} />
+          <StudentsTable
+            columns={bookTableColumns}
+            tableData={books}
+            loading={isLoading}
+            onRowClick={(e) => console.log(e)}
+          />
         </main>
       </Container>
 
