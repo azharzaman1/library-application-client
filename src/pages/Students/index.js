@@ -10,6 +10,8 @@ import { useSnackbar } from "notistack";
 import axios from "../../api/axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { studentsTableColumns } from "../../static/studentsTableColumns";
+import dashify from "dashify";
+import { getRandomInt, getStudentRollNo } from "../../utils";
 
 const Students = () => {
   const [addNewDialogOpen, setAddNewDialogOpen] = useState(false);
@@ -23,11 +25,7 @@ const Students = () => {
 
   // react-query get ll students
 
-  const {
-    isLoading,
-    isFetching,
-    refetch: fetchStudents,
-  } = useQuery(
+  const { isLoading } = useQuery(
     "query-students",
     async () => {
       return await axios.get(`/api/v1/students`);
@@ -37,15 +35,16 @@ const Students = () => {
         console.log(res);
         const tableData = res.data.found.map((row, i) => ({
           id: i + 1,
+          rollNo: row.rollNo,
           firstName: row.firstName,
           lastName: row.lastName,
           class: row.class,
         }));
         setStudents(tableData);
+        console.log(tableData);
         setPosting(false);
       },
       onError: (err) => {
-        const statusCode = err.response.status;
         const statusText = err.response.statusText;
         setPosting(false);
         enqueueSnackbar(statusText, {
@@ -72,7 +71,6 @@ const Students = () => {
         queryClient.invalidateQueries("query-students");
       },
       onError: (err) => {
-        const statusCode = err.response.status;
         const statusText = err.response.statusText;
         setPosting(false);
         enqueueSnackbar(statusText, {
@@ -89,10 +87,13 @@ const Students = () => {
       });
     } else {
       setPosting(true);
+      const slug = dashify(`${firstName} ${lastName}`);
       postStudent({
         firstName,
         lastName,
         class: studentClass,
+        slug,
+        // roll no will be set server-side
       });
     }
   };
@@ -102,7 +103,6 @@ const Students = () => {
     setLastName("");
     setStudentClass("");
   };
-
   return (
     <div>
       <Container maxWidth={false}>
