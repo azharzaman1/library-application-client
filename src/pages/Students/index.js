@@ -4,8 +4,10 @@ import Heading from "../../components/Generic/Heading";
 import Container from "../../components/Generic/Layout/Container";
 import StudentsTable from "../../components/Generic/Table";
 import Dialog from "../../components/Generic/Dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Text from "../../components/Generic/Text";
+import { useSnackbar } from "notistack";
+import axios from "../../api/axios";
 
 const columns = [
   { field: "id", headerName: "ID", width: 90 },
@@ -28,29 +30,78 @@ const columns = [
   },
 ];
 
-const students = [
-  { class: "MB-1", id: 1, lastName: "Snow", firstName: "Jon", age: 35 },
-  { class: "MB-1", id: 2, lastName: "Lannister", firstName: "Cersei", age: 42 },
-  { class: "MB-1", id: 3, lastName: "Lannister", firstName: "Jaime", age: 45 },
-  { class: "MB-1", id: 4, lastName: "Stark", firstName: "Arya", age: 16 },
-  {
-    class: "MB-1",
-    id: 5,
-    lastName: "Targaryen",
-    firstName: "Daenerys",
-    age: null,
-  },
-  { class: "MB-1", id: 6, lastName: "Melisandre", firstName: null, age: 150 },
-  { class: "MB-1", id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-  { class: "MB-1", id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
-  { class: "MB-1", id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
-];
-
 const Students = () => {
   const [addNewDialogOpen, setAddNewDialogOpen] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [studentClass, setStudentClass] = useState("");
+  const [posting, setPosting] = useState(false);
+  const [students, setStudents] = useState([]);
+
+  useEffect(() => {
+    let mounted = true;
+    const controller = new AbortController();
+
+    const fetchStudents = async () => {
+      try {
+        const response = await axios.get("/api/v1/students", {
+          signal: controller.signal,
+        });
+        const tableData = response.data.found.map((row, i) => ({
+          id: i + 1,
+          firstName: row.firstName,
+          lastName: row.lastName,
+          class: row.class,
+        }));
+        mounted && setStudents(tableData);
+      } catch (err) {
+        console.error(err.response || err.request);
+      }
+    };
+
+    fetchStudents();
+
+    return () => {
+      mounted = false;
+      controller.abort();
+    };
+  }, [posting]);
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleSaveStudent = async () => {
+    if (firstName === "" || lastName === "") {
+      enqueueSnackbar("First name & last name are required", {
+        variant: "warning",
+      });
+    } else {
+      console.log(firstName, lastName, studentClass);
+      setPosting(true);
+      try {
+        const response = await axios.post("/api/v1/students", {
+          firstName,
+          lastName,
+          class: studentClass,
+        });
+        console.log(response);
+        resetForm();
+        setPosting(false);
+        setAddNewDialogOpen(false);
+        enqueueSnackbar(response.statusText, { variant: "success" });
+      } catch (err) {
+        console.log(err.response || err.request);
+        setPosting(false);
+      }
+    }
+  };
+
+  const resetForm = () => {
+    setFirstName("");
+    setLastName("");
+    setStudentClass("");
+  };
+
+  console.log(students);
 
   return (
     <div>
@@ -79,15 +130,19 @@ const Students = () => {
           </AppBar>
         </Box>
         <main className="mt-2">
-          <StudentsTable columns={columns} tableData={students} />
+          <StudentsTable
+            columns={columns}
+            tableData={students}
+            onRowClick={(e) => console.log(e)}
+          />
         </main>
       </Container>
       <Dialog
         dialogTitle="Add New Student"
         open={addNewDialogOpen}
         setOpen={setAddNewDialogOpen}
-        confirmAction={() => console.log("Confirmed")}
-        confirmActionLabel="Add Student"
+        confirmAction={handleSaveStudent}
+        confirmActionLabel={posting ? "Adding..." : "Add Student"}
         discardActionLabel="Discard"
       >
         {/* Dialog Content */}
