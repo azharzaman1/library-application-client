@@ -10,13 +10,16 @@ import {
   TextField,
   Toolbar,
 } from "@mui/material";
-import React, { useState } from "react";
+import { useSnackbar } from "notistack";
+import React, { useEffect, useState } from "react";
+import axios from "../../api/axios";
 import Dialog from "../../components/Generic/Dialog";
 import Heading from "../../components/Generic/Heading";
 import Container from "../../components/Generic/Layout/Container";
 
 import StudentsTable from "../../components/Generic/Table";
 import Text from "../../components/Generic/Text";
+import { parseISOString } from "../../theming";
 
 const columns = [
   { field: "id", headerName: "ID", width: 90 },
@@ -52,24 +55,6 @@ const columns = [
   },
 ];
 
-const books = [
-  { class: "MB-1", id: 1, lastName: "Snow", firstName: "Jon" },
-  { class: "MB-1", id: 2, lastName: "Lannister", firstName: "Cersei" },
-  { class: "MB-1", id: 3, lastName: "Lannister", firstName: "Jaime" },
-  { class: "MB-1", id: 4, lastName: "Stark", firstName: "Arya" },
-  {
-    class: "MB-1",
-    id: 5,
-    lastName: "Targaryen",
-    firstName: "Daenerys",
-    age: null,
-  },
-  { class: "MB-1", id: 6, lastName: "Melisandre", firstName: null },
-  { class: "MB-1", id: 7, lastName: "Clifford", firstName: "Ferrara" },
-  { class: "MB-1", id: 8, lastName: "Frances", firstName: "Rossini" },
-  { class: "MB-1", id: 9, lastName: "Roxie", firstName: "Harvey" },
-];
-
 const Books = () => {
   const [addNewDialogOpen, setAddNewDialogOpen] = useState(false);
   const [available, setAvailable] = useState(false);
@@ -78,6 +63,81 @@ const Books = () => {
   const [borrowedBy, setBorrowedBy] = useState("");
   const [borrowedOn, setBorrowedOn] = useState(new Date());
   const [returnDate, setReturnDate] = useState(new Date());
+  const [posting, setPosting] = useState(false);
+  const [books, setBooks] = useState([]);
+  const { enqueueSnackbar } = useSnackbar();
+
+  useEffect(() => {
+    let mounted = true;
+    const controller = new AbortController();
+
+    const fetchStudents = async () => {
+      try {
+        const response = await axios.get("/api/v1/books", {
+          signal: controller.signal,
+        });
+        const tableData = response.data.found.map((row, i) => ({
+          id: i + 1,
+          name: row.name,
+          author: row.author,
+          isBorrowed: row.borrowedBy ? "No" : "Yes",
+          borrowedBy: row.borrowedBy || "-",
+          borrowedOn: row.borrowedBy ? parseISOString(row.borrowedOn) : "-", // if borrowed only then date
+          returnDate: row.borrowedBy ? parseISOString(row.returnDate) : "-", // if borrowed only then date
+        }));
+        mounted && setBooks(tableData);
+      } catch (err) {
+        console.error(err.response || err.request);
+      }
+    };
+
+    fetchStudents();
+
+    return () => {
+      mounted = false;
+      controller.abort();
+    };
+  }, [posting]);
+
+  const handleSaveBook = async () => {
+    if (name === "" || author === "") {
+      enqueueSnackbar("First name & last name are required", {
+        variant: "warning",
+      });
+    } else {
+      setPosting(true);
+      try {
+        const response = await axios.post("/api/v1/books", {
+          name,
+          author,
+          isBorrowed: available,
+          borrowedBy,
+          borrowedOn: available ? "" : borrowedOn,
+          returnDate: available ? "" : returnDate,
+        });
+
+        console.log(response);
+        resetForm();
+        setPosting(false);
+        setAddNewDialogOpen(false);
+        enqueueSnackbar(response.statusText, { variant: "success" });
+      } catch (err) {
+        console.log(err.response || err.request);
+        setPosting(false);
+      }
+    }
+  };
+
+  const resetForm = () => {
+    setName("");
+    setAuthor("");
+    setAvailable(false);
+    setBorrowedBy("");
+    setBorrowedOn(new Date());
+    setReturnDate(new Date());
+  };
+
+  console.log(books);
 
   const handleAvailableChange = (e) => {
     setAvailable(e.target.checked);
@@ -118,8 +178,8 @@ const Books = () => {
         dialogTitle="Add New Book"
         open={addNewDialogOpen}
         setOpen={setAddNewDialogOpen}
-        confirmAction={() => console.log("Confirmed")}
-        confirmActionLabel="Add Book"
+        confirmAction={handleSaveBook}
+        confirmActionLabel={posting ? "Adding..." : "Add Book"}
         discardActionLabel="Discard"
       >
         {/* Dialog Content */}

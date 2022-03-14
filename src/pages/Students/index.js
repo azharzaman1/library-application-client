@@ -37,6 +37,7 @@ const Students = () => {
   const [studentClass, setStudentClass] = useState("");
   const [posting, setPosting] = useState(false);
   const [students, setStudents] = useState([]);
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     let mounted = true;
@@ -66,8 +67,6 @@ const Students = () => {
       controller.abort();
     };
   }, [posting]);
-
-  const { enqueueSnackbar } = useSnackbar();
 
   const handleSaveStudent = async () => {
     if (firstName === "" || lastName === "") {
