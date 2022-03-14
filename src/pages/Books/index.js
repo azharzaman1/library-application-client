@@ -73,6 +73,11 @@ const books = [
 const Books = () => {
   const [addNewDialogOpen, setAddNewDialogOpen] = useState(false);
   const [available, setAvailable] = useState(false);
+  const [name, setName] = useState("");
+  const [author, setAuthor] = useState("");
+  const [borrowedBy, setBorrowedBy] = useState("");
+  const [borrowedOn, setBorrowedOn] = useState(new Date());
+  const [returnDate, setReturnDate] = useState(new Date());
 
   const handleAvailableChange = (e) => {
     setAvailable(e.target.checked);
@@ -125,18 +130,22 @@ const Books = () => {
           <Grid container columnSpacing={2} rowSpacing={2}>
             <Grid item sx={12}>
               <TextField
+                fullWidth
                 id="book-name"
                 label="Book Name"
-                fullWidth
                 variant="outlined"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
             </Grid>
             <Grid item sx={12}>
               <TextField
+                fullWidth
                 id="author-name"
                 label="Author Name"
-                fullWidth
                 variant="outlined"
+                value={author}
+                onChange={(e) => setAuthor(e.target.value)}
               />
             </Grid>
             <Grid item sx={12}>
@@ -156,10 +165,12 @@ const Books = () => {
               <Grid item container columnSpacing={2} rowSpacing={3}>
                 <Grid item sx={12}>
                   <TextField
+                    fullWidth
                     id="borrowed-by"
                     label="Borrowed By"
-                    fullWidth
                     variant="outlined"
+                    value={borrowedBy}
+                    onChange={(e) => setBorrowedBy(e.target.value)}
                   />
                 </Grid>
                 <Grid item sx={12}>
@@ -173,6 +184,8 @@ const Books = () => {
                     InputLabelProps={{
                       shrink: true,
                     }}
+                    value={borrowedOn}
+                    onChange={(e) => setBorrowedOn(e.target.value)}
                   />
                 </Grid>
                 <Grid item sx={12}>
@@ -186,6 +199,8 @@ const Books = () => {
                     InputLabelProps={{
                       shrink: true,
                     }}
+                    value={returnDate}
+                    onChange={(e) => setReturnDate(e.target.value)}
                   />
                 </Grid>
               </Grid>

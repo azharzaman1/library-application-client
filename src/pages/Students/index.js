@@ -48,6 +48,9 @@ const students = [
 
 const Students = () => {
   const [addNewDialogOpen, setAddNewDialogOpen] = useState(false);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [studentClass, setStudentClass] = useState("");
 
   return (
     <div>
@@ -99,6 +102,8 @@ const Students = () => {
                 label="First Name"
                 fullWidth
                 variant="outlined"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
               />
             </Grid>
             <Grid item sx={12}>
@@ -107,6 +112,8 @@ const Students = () => {
                 label="Last Name"
                 fullWidth
                 variant="outlined"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
               />
             </Grid>
             <Grid item sx={12}>
@@ -115,6 +122,8 @@ const Students = () => {
                 label="Class"
                 fullWidth
                 variant="outlined"
+                value={studentClass}
+                onChange={(e) => setStudentClass(e.target.value)}
               />
             </Grid>
             <Grid item sx={12} md={6} lg={3}></Grid>
