@@ -9,19 +9,19 @@ export const muiTheme = createTheme({
       main: palette.primary,
       dark: palette.primaryDark,
       light: palette.primaryLight,
-      contrastText: palette.primaryText,
+      contrastText: palette.backgroundColor1,
     },
 
     secondary: {
       main: palette.secondary,
       dark: palette.secondaryDark,
       light: palette.secondaryLight,
-      contrastText: palette.primaryText,
+      contrastText: palette.backgroundColor1,
     },
 
     background: {
       default: palette.backgroundColor1,
-      paper: palette.backgroundColor2,
+      paper: palette.backgroundContrastColor,
     },
 
     text: {
@@ -32,7 +32,7 @@ export const muiTheme = createTheme({
     divider: palette.dividerColor,
   },
   shape: {
-    borderRadius: 8,
+    borderRadius: 5,
   },
   typography: {
     button: {
@@ -106,7 +106,7 @@ export const muiTheme = createTheme({
   components: {
     MuiButton: {
       defaultProps: {
-        disableElevation: true,
+        disableElevation: false,
       },
       styleOverrides: {
         root: {
@@ -134,7 +134,7 @@ export const muiTheme = createTheme({
     },
     MuiButtonBase: {
       defaultProps: {
-        disableRipple: true,
+        disableRipple: false,
       },
     },
     MuiCardContent: {

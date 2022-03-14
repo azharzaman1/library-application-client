@@ -1,8 +1,8 @@
 import { Route, Routes } from "react-router-dom";
 import Layout from "./components/Generic/Layout";
 import NotFound from "./pages/404";
+import Books from "./pages/Books";
 import Book from "./pages/Books/Book";
-import Books from "./pages/Books/Book";
 import Homepage from "./pages/Homepage";
 import Students from "./pages/Students";
 import Student from "./pages/Students/Student";
