@@ -1,8 +1,11 @@
-import { AppBar, Box, Button, Toolbar } from "@mui/material";
+import { AppBar, Box, Button, Grid, TextField, Toolbar } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import Heading from "../../components/Generic/Heading";
 import Container from "../../components/Generic/Layout/Container";
 import StudentsTable from "../../components/Generic/Table";
+import Dialog from "../../components/Generic/Dialog";
+import { useState } from "react";
+import Text from "../../components/Generic/Text";
 
 const columns = [
   { field: "id", headerName: "ID", width: 90 },
@@ -44,6 +47,8 @@ const students = [
 ];
 
 const Students = () => {
+  const [addNewDialogOpen, setAddNewDialogOpen] = useState(false);
+
   return (
     <div>
       <Container maxWidth={false}>
@@ -58,7 +63,12 @@ const Students = () => {
                 Students
               </Heading>
               <div className="appBar__right flex-1 flex justify-end">
-                <Button color="primary" variant="contained" endIcon={<Add />}>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  endIcon={<Add />}
+                  onClick={() => setAddNewDialogOpen(true)}
+                >
                   Add Student
                 </Button>
               </div>
@@ -69,6 +79,48 @@ const Students = () => {
           <StudentsTable columns={columns} tableData={students} />
         </main>
       </Container>
+      <Dialog
+        dialogTitle="Add New Student"
+        open={addNewDialogOpen}
+        setOpen={setAddNewDialogOpen}
+        confirmAction={() => console.log("Confirmed")}
+        confirmActionLabel="Add Student"
+        discardActionLabel="Discard"
+      >
+        {/* Dialog Content */}
+        <div>
+          <div className="pb-5">
+            <Text>Fill in info and hit Add New</Text>
+          </div>
+          <Grid container columnSpacing={2} rowSpacing={2}>
+            <Grid item sx={12}>
+              <TextField
+                id="first-name"
+                label="First Name"
+                fullWidth
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item sx={12}>
+              <TextField
+                id="last-name"
+                label="Last Name"
+                fullWidth
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item sx={12}>
+              <TextField
+                id="class-name"
+                label="Class"
+                fullWidth
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item sx={12} md={6} lg={3}></Grid>
+          </Grid>
+        </div>
+      </Dialog>
     </div>
   );
 };
