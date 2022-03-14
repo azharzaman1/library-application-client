@@ -1,7 +1,7 @@
 import * as React from "react";
 import { DataGrid } from "@mui/x-data-grid";
 
-const Table = ({ loading, columns, tableData, onRowClick }) => {
+const Table = ({ loading, columns, completeData, tableData, onRowClick }) => {
   return (
     <div style={{ height: 400, width: "100%" }}>
       <DataGrid

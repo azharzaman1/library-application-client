@@ -4,14 +4,14 @@ import Heading from "../../components/Generic/Heading";
 import Container from "../../components/Generic/Layout/Container";
 import StudentsTable from "../../components/Generic/Table";
 import Dialog from "../../components/Generic/Dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Text from "../../components/Generic/Text";
 import { useSnackbar } from "notistack";
 import axios from "../../api/axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { studentsTableColumns } from "../../static/studentsTableColumns";
 import dashify from "dashify";
-import { getRandomInt, getStudentRollNo } from "../../utils";
+import { useNavigate } from "react-router-dom";
 
 const Students = () => {
   const [addNewDialogOpen, setAddNewDialogOpen] = useState(false);
@@ -20,19 +20,24 @@ const Students = () => {
   const [studentClass, setStudentClass] = useState("");
   const [posting, setPosting] = useState(false);
   const [students, setStudents] = useState([]);
+  const [tableData, setTableData] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
 
+  const navigate = useNavigate();
+
   // react-query get ll students
 
-  const { isLoading } = useQuery(
+  const { isLoading, refetch: fetchStudents } = useQuery(
     "query-students",
     async () => {
       return await axios.get(`/api/v1/students`);
     },
     {
+      enabled: false,
       onSuccess: (res) => {
         console.log(res);
+        setStudents(res.data.found);
         const tableData = res.data.found.map((row, i) => ({
           id: i + 1,
           rollNo: row.rollNo,
@@ -40,8 +45,7 @@ const Students = () => {
           lastName: row.lastName,
           class: row.class,
         }));
-        setStudents(tableData);
-        console.log(tableData);
+        setTableData(tableData);
         setPosting(false);
       },
       onError: (err) => {
@@ -53,6 +57,10 @@ const Students = () => {
       },
     }
   );
+
+  useEffect(() => {
+    fetchStudents();
+  }, [posting, fetchStudents]);
 
   // react-query post student
   const { mutate: postStudent } = useMutation(
@@ -103,6 +111,15 @@ const Students = () => {
     setLastName("");
     setStudentClass("");
   };
+
+  const handleStudentClick = (student) => {
+    console.log(student);
+    console.log(students);
+    const slug = students?.filter((stu) => stu.rollNo === student.row.rollNo)[0]
+      .slug;
+    navigate(slug);
+  };
+
   return (
     <div>
       <Container maxWidth={false}>
@@ -132,9 +149,9 @@ const Students = () => {
         <main className="mt-2">
           <StudentsTable
             columns={studentsTableColumns}
-            tableData={students}
+            tableData={tableData}
             loading={isLoading}
-            onRowClick={(e) => console.log(e)}
+            onRowClick={handleStudentClick}
           />
         </main>
       </Container>

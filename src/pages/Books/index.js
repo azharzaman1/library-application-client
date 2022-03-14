@@ -10,9 +10,11 @@ import {
   TextField,
   Toolbar,
 } from "@mui/material";
+import dashify from "dashify";
 import { useSnackbar } from "notistack";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useNavigate } from "react-router-dom";
 import axios from "../../api/axios";
 import Dialog from "../../components/Generic/Dialog";
 import Heading from "../../components/Generic/Heading";
@@ -32,24 +34,25 @@ const Books = () => {
   const [returnDate, setReturnDate] = useState(new Date());
   const [posting, setPosting] = useState(false);
   const [books, setBooks] = useState([]);
+  const [tableData, setTableData] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
 
   const queryClient = useQueryClient();
 
   // react-query get ll students
 
-  const {
-    isLoading,
-    isFetching,
-    refetch: fetchBooks,
-  } = useQuery(
+  const { isLoading, refetch: fetchBooks } = useQuery(
     "query-books",
     async () => {
       return await axios.get(`/api/v1/books`);
     },
     {
+      enabled: false,
       onSuccess: (res) => {
         console.log(res);
+        setBooks(res.data.found);
+        // converting data to format table is waiting for
         const tableData = res.data.found.map((row, i) => ({
           id: i + 1,
           name: row.name,
@@ -59,11 +62,11 @@ const Books = () => {
           borrowedOn: row.borrowedBy ? parseISOString(row.borrowedOn) : "-", // if borrowed only then date
           returnDate: row.borrowedBy ? parseISOString(row.returnDate) : "-", // if borrowed only then date
         }));
-        setBooks(tableData);
+
+        setTableData(tableData);
         setPosting(false);
       },
       onError: (err) => {
-        const statusCode = err.response.status;
         const statusText = err.response.statusText;
         setPosting(false);
         enqueueSnackbar(statusText, {
@@ -72,6 +75,10 @@ const Books = () => {
       },
     }
   );
+
+  useEffect(() => {
+    fetchBooks();
+  }, [false, fetchBooks]);
 
   // react-query post student
   const { mutate: postBook } = useMutation(
@@ -88,9 +95,9 @@ const Books = () => {
         setPosting(false);
         setAddNewDialogOpen(false);
         queryClient.invalidateQueries("query-books");
+        fetchBooks();
       },
       onError: (err) => {
-        const statusCode = err.response.status;
         const statusText = err.response.statusText;
         setPosting(false);
         enqueueSnackbar(statusText, {
@@ -107,6 +114,7 @@ const Books = () => {
       });
     } else {
       setPosting(true);
+      const slug = dashify(name);
       postBook({
         name,
         author,
@@ -114,6 +122,7 @@ const Books = () => {
         borrowedBy,
         borrowedOn: available ? "" : borrowedOn,
         returnDate: available ? "" : returnDate,
+        slug,
       });
     }
   };
@@ -129,6 +138,11 @@ const Books = () => {
 
   const handleAvailableChange = (e) => {
     setAvailable(e.target.checked);
+  };
+
+  const handleBookClick = (book) => {
+    const slug = books?.filter((b) => b.name === book.row.name)[0].slug;
+    navigate(slug);
   };
 
   return (
@@ -160,9 +174,10 @@ const Books = () => {
         <main className="mt-2">
           <StudentsTable
             columns={bookTableColumns}
-            tableData={books}
+            completeData={books}
+            tableData={tableData}
             loading={isLoading}
-            onRowClick={(e) => console.log(e)}
+            onRowClick={handleBookClick}
           />
         </main>
       </Container>
