@@ -113,8 +113,6 @@ const Students = () => {
   };
 
   const handleStudentClick = (student) => {
-    console.log(student);
-    console.log(students);
     const slug = students?.filter((stu) => stu.rollNo === student.row.rollNo)[0]
       .slug;
     navigate(slug);
