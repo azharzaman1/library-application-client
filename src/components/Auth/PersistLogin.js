@@ -2,11 +2,12 @@ import { Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth";
 import useRefreshToken from "../../hooks/useRefreshToken";
-import { useDispatch } from "react-redux";
-import { SET_USER } from "../../redux/slices/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { selectSessionPersist, SET_USER } from "../../redux/slices/userSlice";
 
 const PersistLogin = () => {
   const dispatch = useDispatch();
+  const persistSession = useSelector(selectSessionPersist);
   const [isLoading, setIsLoading] = useState(true);
   const refresh = useRefreshToken();
   const currentUser = useAuth();
@@ -22,19 +23,26 @@ const PersistLogin = () => {
         mounted && setIsLoading(false);
       }
     };
-    !currentUser?.accessToken ? verifyRefreshToken() : setIsLoading(false);
+    !currentUser?.accessToken && persistSession
+      ? verifyRefreshToken()
+      : setIsLoading(false);
 
     return () => {
       mounted = false;
     };
-  }, [currentUser, refresh, dispatch]);
+  }, [currentUser, persistSession, refresh, dispatch]);
 
-  useEffect(() => {
-    console.log("isLoading", isLoading);
-    console.log("Access Token In Persist", currentUser?.accessToken);
-  }, [isLoading, currentUser]);
-
-  return <>{isLoading ? <div>Loading...</div> : <Outlet />}</>;
+  return (
+    <>
+      {!persistSession ? (
+        <Outlet />
+      ) : isLoading ? (
+        <div>Loading...</div>
+      ) : (
+        <Outlet />
+      )}
+    </>
+  );
 };
 
 export default PersistLogin;

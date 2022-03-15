@@ -1,16 +1,28 @@
-import { useState } from "react";
-import { Button, Grid, TextField } from "@mui/material";
+import { useEffect, useState } from "react";
+import {
+  Button,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  Grid,
+  TextField,
+} from "@mui/material";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { axiosPrivate } from "../../../api/axios";
 import { useSnackbar } from "notistack";
-import { SET_USER } from "../../../redux/slices/userSlice";
+import {
+  selectSessionPersist,
+  SET_SESSION_PERSIST,
+  SET_USER,
+} from "../../../redux/slices/userSlice";
 import Heading from "../../../components/Generic/Heading";
 import Container from "../../../components/Generic/Layout/Container";
 import Text from "../../../components/Generic/Text";
 
 const Login = () => {
+  const persistSession = useSelector(selectSessionPersist);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loggingIn, setLoggingIn] = useState(false);
@@ -64,6 +76,14 @@ const Login = () => {
     setPassword("");
   };
 
+  const handlePersistanceChange = (e) => {
+    dispatch(SET_SESSION_PERSIST(e.target.checked));
+  };
+
+  useEffect(() => {
+    localStorage.setItem("library-application-session-persist", persistSession);
+  }, [persistSession]);
+
   return (
     <div className="flex items-center justify-center min-h-screen">
       <Container maxWidth={false}>
@@ -101,6 +121,19 @@ const Login = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
+              </Grid>
+              <Grid item xs={12}>
+                <FormGroup>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={persistSession}
+                        onChange={handlePersistanceChange}
+                      />
+                    }
+                    label="Remember me"
+                  />
+                </FormGroup>
               </Grid>
               <input type="submit" className="hidden" />
               <Grid item xs={12}>
