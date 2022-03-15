@@ -17,6 +17,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "../../api/axios";
 import Dialog from "../../components/Generic/Dialog";
+import AlertDialog from "../../components/Generic/Dialog/Alert";
 import Heading from "../../components/Generic/Heading";
 import Container from "../../components/Generic/Layout/Container";
 import Text from "../../components/Generic/Text";
@@ -88,7 +89,7 @@ const Book = () => {
     setUpdateDialogOpen(true);
   };
 
-  // react-query post student
+  // react-query update book
   const { mutate: updateBook } = useMutation(
     async (bookData) => {
       return await axios.put(`/api/v1/books/${slug}`, bookData);
@@ -138,6 +139,42 @@ const Book = () => {
     });
   };
 
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  // react-query delete book
+  const { mutate: deleteBook } = useMutation(
+    async () => {
+      return await axios.delete(`/api/v1/books/${slug}`);
+    },
+    {
+      onSuccess: (res) => {
+        console.log("Deleted", res);
+        enqueueSnackbar(res.statusText, {
+          variant: "success",
+        });
+        setDeleteDialogOpen(false);
+        // navigate to new book page, cause slug gets updated
+        // if you change name of Book
+        queryClient.invalidateQueries("query-books");
+        navigate(`/books`, { replace: true });
+      },
+      onError: (err) => {
+        const statusText = err.response.statusText;
+        setUpdating(false);
+        setDeleteDialogOpen(false);
+        enqueueSnackbar(statusText, {
+          variant: "error",
+        });
+      },
+    }
+  );
+
+  // delete book handler
+  const handleBookDelete = async () => {
+    deleteBook();
+    setSlug(book?.slug);
+  };
+
   const resetForm = () => {
     setName("");
     setAuthor("");
@@ -169,7 +206,7 @@ const Book = () => {
           >
             <div className="flex items-center px-1 space-x-3 bg-white bg-opacity-60 absolute top-1 right-1 rounded-full">
               <Tooltip title="Delete">
-                <IconButton>
+                <IconButton onClick={() => setDeleteDialogOpen(true)}>
                   <Delete fontSize="small" />
                 </IconButton>
               </Tooltip>
@@ -352,6 +389,17 @@ const Book = () => {
           </Grid>
         </div>
       </Dialog>
+      {/* Delete Book dialog */}
+      <AlertDialog
+        open={deleteDialogOpen}
+        setOpen={setDeleteDialogOpen}
+        dialogTitle={`Delete ${book?.name}?`}
+        confirmActionLabel="Delete"
+        confirmAction={handleBookDelete}
+      >
+        Are you sure you want to delete {book?.name}, this process can not be
+        undone!
+      </AlertDialog>
     </div>
   );
 };
