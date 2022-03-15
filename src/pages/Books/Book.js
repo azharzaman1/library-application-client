@@ -1,17 +1,31 @@
 import { AddAlert, Delete, Edit, VisibilityOff } from "@mui/icons-material";
-import { Button, Divider, Grid, IconButton, Tooltip } from "@mui/material";
+import {
+  Button,
+  Checkbox,
+  Divider,
+  FormControlLabel,
+  FormGroup,
+  Grid,
+  IconButton,
+  TextField,
+  Tooltip,
+} from "@mui/material";
+import dashify from "dashify";
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
-import { useQuery } from "react-query";
-import { useParams } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "../../api/axios";
+import Dialog from "../../components/Generic/Dialog";
 import Heading from "../../components/Generic/Heading";
 import Container from "../../components/Generic/Layout/Container";
 import Text from "../../components/Generic/Text";
-import { parseISOString } from "../../theming";
+import { parseISOString } from "../../utils";
 
 const Book = () => {
   const [book, setBook] = useState({});
+  const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
+  const [updating, setUpdating] = useState(false);
 
   const params = useParams();
   const { bookID } = params;
@@ -44,6 +58,95 @@ const Book = () => {
     fetchBook();
   }, [false, fetchBook]);
 
+  // states for book update
+  const [available, setAvailable] = useState(false);
+  const [name, setName] = useState("");
+  const [author, setAuthor] = useState("");
+  const [borrowedBy, setBorrowedBy] = useState("");
+  const [borrowedOn, setBorrowedOn] = useState(new Date());
+  const [returnDate, setReturnDate] = useState(new Date());
+  const [slug, setSlug] = useState("");
+
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  // book availablility switch
+  const handleAvailableChange = (e) => {
+    setAvailable(e.target.checked);
+  };
+
+  // open dialog with intial values as of book
+  const handleUpdateDialogOpen = () => {
+    setAvailable(!book?.borrowedBy);
+    setName(book?.name);
+    setAuthor(book?.author);
+    setBorrowedBy(book?.borrowedBy);
+    setBorrowedOn(parseISOString(book?.borrowedOn, "-"));
+    setReturnDate(parseISOString(book?.returnDate, "-"));
+
+    setSlug(book?.slug);
+    setUpdateDialogOpen(true);
+  };
+
+  // react-query post student
+  const { mutate: updateBook } = useMutation(
+    async (bookData) => {
+      return await axios.put(`/api/v1/books/${slug}`, bookData);
+    },
+    {
+      onSuccess: (res) => {
+        console.log("Updated", res);
+        enqueueSnackbar(res.statusText, {
+          variant: "success",
+        });
+        resetForm();
+        setUpdating(false);
+        setUpdateDialogOpen(false);
+        // navigate to new book page, cause slug gets updated
+        // if you change name of book
+        const newSlug = res.data.updated.slug;
+        queryClient.invalidateQueries("query-book-by-slug");
+        setBook(res.data.updated);
+        if (newSlug !== slug) {
+          navigate(`/books/${newSlug}`, { replace: true });
+        }
+      },
+      onError: (err) => {
+        const statusText = err.response.statusText;
+        setUpdating(false);
+        enqueueSnackbar(statusText, {
+          variant: "error",
+        });
+      },
+    }
+  );
+
+  // update book handler
+  const handleBookUpdate = async () => {
+    if (!name || !author) {
+      enqueueSnackbar("Book name and author is required!", { variant: "info" });
+    }
+    const slug = dashify(name);
+    updateBook({
+      name,
+      author,
+      isBorrowed: !available,
+      borrowedBy: available ? "" : borrowedBy,
+      borrowedOn: available ? "" : borrowedOn,
+      returnDate: available ? "" : returnDate,
+      slug,
+    });
+  };
+
+  const resetForm = () => {
+    setName("");
+    setAuthor("");
+    setAvailable(false);
+    setBorrowedBy("");
+    setBorrowedOn(new Date());
+    setReturnDate(new Date());
+  };
+
   const isBorrowed = book.borrowedBy; //if borower name is defined, mean currently borrowed
 
   if (isLoading) {
@@ -70,7 +173,7 @@ const Book = () => {
                   <Delete fontSize="small" />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Edit">
+              <Tooltip title="Edit" onClick={handleUpdateDialogOpen}>
                 <IconButton>
                   <Edit fontSize="small" />
                 </IconButton>
@@ -153,6 +256,102 @@ const Book = () => {
           </Grid>
         </div>
       </Container>
+      {/* Edit Book dialog */}
+      <Dialog
+        dialogTitle={`Update Book: ${book?.name}`}
+        open={updateDialogOpen}
+        setOpen={setUpdateDialogOpen}
+        confirmAction={handleBookUpdate}
+        confirmActionLabel={updating ? "Updating..." : "Update Book"}
+        discardActionLabel="Discard"
+      >
+        {/* Dialog Content */}
+        <div>
+          <div className="pb-5">
+            <Text>Fill in info and hit Update</Text>
+          </div>
+          <Grid container columnSpacing={2} rowSpacing={2}>
+            <Grid item sx={12}>
+              <TextField
+                autoFocus
+                fullWidth
+                id="book-name"
+                label="Book Name"
+                variant="outlined"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </Grid>
+            <Grid item sx={12}>
+              <TextField
+                fullWidth
+                id="author-name"
+                label="Author Name"
+                variant="outlined"
+                value={author}
+                onChange={(e) => setAuthor(e.target.value)}
+              />
+            </Grid>
+            <Grid item sx={12}>
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={available}
+                      onChange={handleAvailableChange}
+                    />
+                  }
+                  label="Available for borrow"
+                />
+              </FormGroup>
+            </Grid>
+            {!available && (
+              <Grid item container columnSpacing={2} rowSpacing={3}>
+                <Grid item sx={12}>
+                  <TextField
+                    fullWidth
+                    id="borrowed-by"
+                    label="Borrowed By"
+                    variant="outlined"
+                    value={borrowedBy}
+                    onChange={(e) => setBorrowedBy(e.target.value)}
+                  />
+                </Grid>
+                <Grid item sx={12}>
+                  <TextField
+                    fullWidth
+                    id="borrow-date"
+                    label="Borrowed On"
+                    type="date"
+                    defaultValue="2017-05-24"
+                    sx={{ width: 220 }}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    value={borrowedOn}
+                    onChange={(e) => setBorrowedOn(e.target.value)}
+                  />
+                </Grid>
+                <Grid item sx={12}>
+                  <TextField
+                    fullWidth
+                    id="return-date"
+                    label="Expected return date"
+                    type="date"
+                    defaultValue="2017-05-24"
+                    sx={{ width: 220 }}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    value={returnDate}
+                    onChange={(e) => setReturnDate(e.target.value)}
+                  />
+                </Grid>
+              </Grid>
+            )}
+          </Grid>
+        </div>
+      </Dialog>
     </div>
   );
 };

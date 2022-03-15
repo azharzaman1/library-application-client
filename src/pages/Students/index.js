@@ -169,6 +169,7 @@ const Students = () => {
           <Grid container columnSpacing={2} rowSpacing={2}>
             <Grid item sx={12}>
               <TextField
+                autoFocus
                 id="first-name"
                 label="First Name"
                 fullWidth

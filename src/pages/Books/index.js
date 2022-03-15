@@ -22,7 +22,7 @@ import Container from "../../components/Generic/Layout/Container";
 import StudentsTable from "../../components/Generic/Table";
 import Text from "../../components/Generic/Text";
 import { bookTableColumns } from "../../static/booksTableColumns";
-import { parseISOString } from "../../theming";
+import { parseISOString } from "../../utils";
 
 const Books = () => {
   const [addNewDialogOpen, setAddNewDialogOpen] = useState(false);
@@ -118,7 +118,7 @@ const Books = () => {
       postBook({
         name,
         author,
-        isBorrowed: available,
+        isBorrowed: !available,
         borrowedBy,
         borrowedOn: available ? "" : borrowedOn,
         returnDate: available ? "" : returnDate,
@@ -181,7 +181,7 @@ const Books = () => {
           />
         </main>
       </Container>
-
+      {/* Add New Book dialog */}
       <Dialog
         dialogTitle="Add New Book"
         open={addNewDialogOpen}
@@ -198,6 +198,7 @@ const Books = () => {
           <Grid container columnSpacing={2} rowSpacing={2}>
             <Grid item sx={12}>
               <TextField
+                autoFocus
                 fullWidth
                 id="book-name"
                 label="Book Name"
