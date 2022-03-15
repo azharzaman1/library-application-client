@@ -11,13 +11,14 @@ import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import { palette } from "../../../theming/palette";
 import useAuth from "../../../hooks/useAuth";
-import { axiosPrivate } from "../../../api/axios";
-import { LOGOUT } from "../../../redux/slices/userSlice";
 import { useDispatch } from "react-redux";
+import useLogout from "../../../hooks/useLogout";
+import { LOGOUT } from "../../../redux/slices/userSlice";
 
 const UserMenu = () => {
   const dispatch = useDispatch();
   const currentUser = useAuth();
+  const logout = useLogout();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -29,12 +30,8 @@ const UserMenu = () => {
   };
 
   const handleLogout = async () => {
-    try {
-      const response = await axiosPrivate.get("/auth/logout");
-      response.status === 204 && dispatch(LOGOUT());
-    } catch (err) {
-      console.log(err.response || err.request);
-    }
+    await logout();
+    dispatch(LOGOUT());
   };
 
   return (

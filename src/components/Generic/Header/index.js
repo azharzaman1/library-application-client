@@ -1,12 +1,10 @@
 import { Divider } from "@mui/material";
 import { Link } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
-import useRefreshToken from "../../../hooks/useRefreshToken";
 import UserMenu from "./UserMenu";
 
 const Header = () => {
   const currentUser = useAuth();
-  const refresh = useRefreshToken();
   return (
     <header className="flex justify-between px-3 md:px-6 lg:px-16 bg-white shadow border-b border-gray-200 py-3">
       <div>
@@ -28,7 +26,6 @@ const Header = () => {
           >
             Books
           </Link>
-          <button onClick={() => refresh()}>Refresh</button>
         </nav>
         <Divider orientation="vertical" flexItem />
         <div className="user-nav">
