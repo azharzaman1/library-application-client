@@ -78,6 +78,7 @@ const Register = () => {
               </Grid>
               <Grid item xs={12}>
                 <TextField
+                  autoFocus
                   fullWidth
                   type="text"
                   id="username-input"

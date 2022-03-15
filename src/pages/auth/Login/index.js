@@ -5,14 +5,17 @@ import Container from "../../../components/Generic/Layout/Container";
 import Text from "../../../components/Generic/Text";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
-import axios from "../../../api/axios";
+import { useDispatch } from "react-redux";
+import axios, { axiosWithCredentials } from "../../../api/axios";
 import { useSnackbar } from "notistack";
+import { SET_USER } from "../../../redux/slices/userSlice";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loggingIn, setLoggingIn] = useState(false);
 
+  const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
   const from = location.state?.from?.pathname || "/";
@@ -21,7 +24,7 @@ const Login = () => {
   // react-query login user
   const { mutate: login } = useMutation(
     async (userData) => {
-      return await axios.post("/auth/login", userData);
+      return await axiosWithCredentials.post("/auth/login", userData);
     },
     {
       onSuccess: (res) => {
@@ -31,6 +34,7 @@ const Login = () => {
         });
         resetForm();
         setLoggingIn(false);
+        dispatch(SET_USER(res.data.user));
         // if statusCode == 200, mean successful login
         res.status === 202 && navigate(from, { replace: true });
       },
@@ -76,6 +80,7 @@ const Login = () => {
               </Grid>
               <Grid item xs={12}>
                 <TextField
+                  autoFocus
                   fullWidth
                   autoComplete={false}
                   type="email"
