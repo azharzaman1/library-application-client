@@ -6,9 +6,9 @@ import Text from "../Generic/Text";
 import AlertDialog from "../Generic/Dialog/Alert";
 import { useMutation, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
-import axios from "../../api/axios";
 import { useSnackbar } from "notistack";
 import dashify from "dashify";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const StudentActions = ({ student, setStudent }) => {
   const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
@@ -18,6 +18,7 @@ const StudentActions = ({ student, setStudent }) => {
   const [studentClass, setStudentClass] = useState("");
   const [slug, setSlug] = useState("");
 
+  const axiosPrivate = useAxiosPrivate();
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ const StudentActions = ({ student, setStudent }) => {
   // react-query update student
   const { mutate: updateStudent } = useMutation(
     async (studentData) => {
-      return await axios.put(`/api/v1/students/${slug}`, studentData);
+      return await axiosPrivate.put(`/api/v1/students/${slug}`, studentData);
     },
     {
       onSuccess: (res) => {
@@ -86,7 +87,9 @@ const StudentActions = ({ student, setStudent }) => {
   // react-query student student
   const { mutate: deleteStudent } = useMutation(
     async () => {
-      return await axios.delete(`/api/v1/students/${student?.slug || slug}`);
+      return await axiosPrivate.delete(
+        `/api/v1/students/${student?.slug || slug}`
+      );
     },
     {
       onSuccess: (res) => {

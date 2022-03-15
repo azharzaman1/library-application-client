@@ -15,9 +15,9 @@ import AlertDialog from "../Generic/Dialog/Alert";
 import { useMutation, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { parseISOString } from "../../utils";
-import axios from "../../api/axios";
 import { useSnackbar } from "notistack";
 import dashify from "dashify";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const BookActions = ({ book, setBook }) => {
   const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
@@ -30,6 +30,7 @@ const BookActions = ({ book, setBook }) => {
   const [returnDate, setReturnDate] = useState(new Date());
   const [slug, setSlug] = useState("");
 
+  const axiosPrivate = useAxiosPrivate();
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -55,7 +56,10 @@ const BookActions = ({ book, setBook }) => {
   // react-query update book
   const { mutate: updateBook } = useMutation(
     async (bookData) => {
-      return await axios.put(`/api/v1/books/${slug}`, bookData);
+      return await axiosPrivate.put(
+        `/api/v1/books/${book?.slug || slug}`,
+        bookData
+      );
     },
     {
       onSuccess: (res) => {
@@ -90,6 +94,7 @@ const BookActions = ({ book, setBook }) => {
     if (!name || !author) {
       enqueueSnackbar("Book name and author is required!", { variant: "info" });
     }
+    setSlug(book?.slug);
     const slug = dashify(name);
     updateBook({
       name,
@@ -107,7 +112,7 @@ const BookActions = ({ book, setBook }) => {
   // react-query delete book
   const { mutate: deleteBook } = useMutation(
     async () => {
-      return await axios.delete(`/api/v1/books/${slug}`);
+      return await axiosPrivate.delete(`/api/v1/books/${book?.slug || slug}`);
     },
     {
       onSuccess: (res) => {
@@ -134,8 +139,8 @@ const BookActions = ({ book, setBook }) => {
 
   // delete book handler
   const handleBookDelete = async () => {
-    deleteBook();
     setSlug(book?.slug);
+    deleteBook();
   };
 
   const resetForm = () => {

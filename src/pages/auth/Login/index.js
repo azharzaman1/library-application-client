@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Button, Grid, TextField } from "@mui/material";
-import Heading from "../../../components/Generic/Heading";
-import Container from "../../../components/Generic/Layout/Container";
-import Text from "../../../components/Generic/Text";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import { useDispatch } from "react-redux";
-import axios, { axiosWithCredentials } from "../../../api/axios";
+import { axiosPrivate } from "../../../api/axios";
 import { useSnackbar } from "notistack";
 import { SET_USER } from "../../../redux/slices/userSlice";
+import Heading from "../../../components/Generic/Heading";
+import Container from "../../../components/Generic/Layout/Container";
+import Text from "../../../components/Generic/Text";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -24,7 +24,7 @@ const Login = () => {
   // react-query login user
   const { mutate: login } = useMutation(
     async (userData) => {
-      return await axiosWithCredentials.post("/auth/login", userData);
+      return await axiosPrivate.post("/auth/login", userData);
     },
     {
       onSuccess: (res) => {

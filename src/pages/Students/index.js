@@ -7,11 +7,11 @@ import Dialog from "../../components/Generic/Dialog";
 import { useEffect, useState } from "react";
 import Text from "../../components/Generic/Text";
 import { useSnackbar } from "notistack";
-import axios from "../../api/axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { studentsTableColumns } from "../../static/studentsTableColumns";
 import dashify from "dashify";
 import { useNavigate } from "react-router-dom";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const Students = () => {
   const [addNewDialogOpen, setAddNewDialogOpen] = useState(false);
@@ -24,6 +24,7 @@ const Students = () => {
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
 
+  const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
 
   // react-query get all students
@@ -31,7 +32,7 @@ const Students = () => {
   const { isLoading, refetch: fetchStudents } = useQuery(
     "query-students",
     async () => {
-      return await axios.get(`/api/v1/students`);
+      return await axiosPrivate.get(`/api/v1/students`);
     },
     {
       enabled: false,
@@ -65,7 +66,7 @@ const Students = () => {
   // react-query post student
   const { mutate: postStudent } = useMutation(
     async (studentData) => {
-      return await axios.post("/api/v1/students", studentData);
+      return await axiosPrivate.post("/api/v1/students", studentData);
     },
     {
       onSuccess: (res) => {

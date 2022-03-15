@@ -4,11 +4,11 @@ import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
-import axios from "../../api/axios";
 import Heading from "../../components/Generic/Heading";
 import Container from "../../components/Generic/Layout/Container";
 import Text from "../../components/Generic/Text";
 import StudentActions from "../../components/Students/StudentActions";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { getRandomInt } from "../../utils";
 
 const Student = () => {
@@ -16,13 +16,14 @@ const Student = () => {
   const params = useParams();
   const { studentID } = params;
 
+  const axiosPrivate = useAxiosPrivate();
   const { enqueueSnackbar } = useSnackbar();
 
   // fetching book info from database
   const { isLoading, refetch: fetchStudent } = useQuery(
     "query-student-by-slug",
     async () => {
-      return await axios.get(`/api/v1/students/${studentID}`);
+      return await axiosPrivate.get(`/api/v1/students/${studentID}`);
     },
     {
       enabled: false,

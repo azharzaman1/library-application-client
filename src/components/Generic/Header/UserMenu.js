@@ -11,7 +11,7 @@ import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import { palette } from "../../../theming/palette";
 import useAuth from "../../../hooks/useAuth";
-import { axiosWithCredentials } from "../../../api/axios";
+import { axiosPrivate } from "../../../api/axios";
 import { LOGOUT } from "../../../redux/slices/userSlice";
 import { useDispatch } from "react-redux";
 
@@ -30,7 +30,7 @@ const UserMenu = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await axiosWithCredentials.get("/auth/logout");
+      const response = await axiosPrivate.get("/auth/logout");
       response.status === 204 && dispatch(LOGOUT());
     } catch (err) {
       console.log(err.response || err.request);
@@ -49,7 +49,7 @@ const UserMenu = () => {
             aria-expanded={open ? "true" : undefined}
           >
             <Avatar sx={{ width: 32, height: 32, bgcolor: palette.primary }}>
-              A
+              {currentUser?.username?.split("")[0].toUpperCase() || "U"}
             </Avatar>
           </IconButton>
         </Tooltip>
@@ -91,7 +91,10 @@ const UserMenu = () => {
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
         <MenuItem>
-          <Avatar sx={{ bgcolor: palette.primary }}>A</Avatar> Profile
+          <Avatar sx={{ bgcolor: palette.primary }}>
+            {currentUser?.username?.split("")[0].toUpperCase() || "U"}
+          </Avatar>{" "}
+          Profile
         </MenuItem>
         <Divider />
         <MenuItem>

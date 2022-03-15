@@ -21,6 +21,7 @@ import Heading from "../../components/Generic/Heading";
 import Container from "../../components/Generic/Layout/Container";
 import StudentsTable from "../../components/Generic/Table";
 import Text from "../../components/Generic/Text";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { bookTableColumns } from "../../static/booksTableColumns";
 import { parseISOString } from "../../utils";
 
@@ -38,6 +39,7 @@ const Books = () => {
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
+  const axiosPrivate = useAxiosPrivate();
   const queryClient = useQueryClient();
 
   // react-query get all books
@@ -45,7 +47,7 @@ const Books = () => {
   const { isLoading, refetch: fetchBooks } = useQuery(
     "query-books",
     async () => {
-      return await axios.get(`/api/v1/books`);
+      return await axiosPrivate.get(`/api/v1/books`);
     },
     {
       enabled: false,
@@ -83,7 +85,7 @@ const Books = () => {
   // react-query post student
   const { mutate: postBook } = useMutation(
     async (bookData) => {
-      return await axios.post("/api/v1/books", bookData);
+      return await axiosPrivate.post("/api/v1/books", bookData);
     },
     {
       onSuccess: (res) => {

@@ -1,19 +1,19 @@
-import axios from "../api/axios";
+import { useDispatch } from "react-redux";
+import { axiosPrivate } from "../api/axios";
+import { SET_USER } from "../redux/slices/userSlice";
 import useAuth from "./useAuth";
 
 const useRefreshToken = () => {
-  const { auth, setAuth } = useAuth();
+  const dispatch = useDispatch();
+  const currentUser = useAuth();
 
   const refresh = async () => {
-    const response = await axios.get("/refresh", {
-      withCredentials: true,
-    });
-    console.log("prev", auth.accessToken);
-    console.log("new", response.data.accessToken);
-    console.log(response);
-    setAuth((prev) => {
-      return { ...prev, accessToken: response.data.accessToken };
-    });
+    const response = await axiosPrivate.get("/api/v1/tokens/refresh");
+    console.log("Refresh Token Response", response.data);
+    console.log("prev token", currentUser?.accessToken);
+    console.log("new token", response.data.accessToken);
+    dispatch(SET_USER({ ...currentUser, ...response.data }));
+
     return response.data.accessToken;
   };
   return refresh;

@@ -4,17 +4,18 @@ import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
-import axios from "../../api/axios";
 import BookActions from "../../components/Books/BookActions";
 import Heading from "../../components/Generic/Heading";
 import Container from "../../components/Generic/Layout/Container";
 import Text from "../../components/Generic/Text";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { parseISOString } from "../../utils";
 
 const Book = () => {
   const [book, setBook] = useState({});
   const params = useParams();
   const { bookID } = params;
+  const axiosPrivate = useAxiosPrivate();
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -23,7 +24,7 @@ const Book = () => {
   const { isLoading, refetch: fetchBook } = useQuery(
     "query-book-by-slug",
     async () => {
-      return await axios.get(`/api/v1/books/${bookID}`);
+      return await axiosPrivate.get(`/api/v1/books/${bookID}`);
     },
     {
       enabled: false,
