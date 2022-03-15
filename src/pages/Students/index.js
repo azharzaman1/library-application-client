@@ -101,7 +101,6 @@ const Students = () => {
         lastName,
         class: studentClass,
         slug,
-        // roll no will be set server-side
       });
     }
   };

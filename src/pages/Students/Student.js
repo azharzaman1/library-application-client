@@ -16,6 +16,7 @@ import axios from "../../api/axios";
 import Heading from "../../components/Generic/Heading";
 import Container from "../../components/Generic/Layout/Container";
 import Text from "../../components/Generic/Text";
+import StudentActions from "../../components/Students/StudentActions";
 import { getRandomInt } from "../../utils";
 
 const Student = () => {
@@ -28,7 +29,7 @@ const Student = () => {
   // fetching book info from database
 
   const { isLoading, refetch: fetchStudent } = useQuery(
-    "query-book-by-slug",
+    "query-student-by-slug",
     async () => {
       return await axios.get(`/api/v1/students/${studentID}`);
     },
@@ -69,23 +70,7 @@ const Student = () => {
               backgroundImage: `url('https://i.ibb.co/zrwjbvm/banner.jpg')`,
             }}
           >
-            <div className="flex items-center px-1 space-x-3 bg-white bg-opacity-60 absolute top-1 right-1 rounded-full">
-              <Tooltip title="Delete">
-                <IconButton>
-                  <Delete fontSize="small" />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Edit">
-                <IconButton>
-                  <Edit fontSize="small" />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Hide">
-                <IconButton>
-                  <VisibilityOff fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            </div>
+            <StudentActions student={student} setStudent={setStudent} />
           </div>
           {/* Details */}
           <Grid
