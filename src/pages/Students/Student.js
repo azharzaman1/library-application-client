@@ -20,8 +20,6 @@ import { getRandomInt } from "../../utils";
 
 const Student = () => {
   const [student, setStudent] = useState({});
-  const [fetching, setFetching] = useState(false);
-
   const params = useParams();
   const { studentID } = params;
 
@@ -39,11 +37,9 @@ const Student = () => {
       onSuccess: (res) => {
         console.log(res);
         setStudent(res.data.found);
-        setFetching(false);
       },
       onError: (err) => {
         const statusText = err.response.statusText;
-        setFetching(false);
         enqueueSnackbar(statusText, {
           variant: "error",
         });

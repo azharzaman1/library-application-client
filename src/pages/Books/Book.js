@@ -12,7 +12,6 @@ import { parseISOString } from "../../theming";
 
 const Book = () => {
   const [book, setBook] = useState({});
-  const [fetching, setFetching] = useState(false);
 
   const params = useParams();
   const { bookID } = params;
@@ -31,11 +30,9 @@ const Book = () => {
       onSuccess: (res) => {
         console.log(res);
         setBook(res.data.found);
-        setFetching(false);
       },
       onError: (err) => {
         const statusText = err.response.statusText;
-        setFetching(false);
         enqueueSnackbar(statusText, {
           variant: "error",
         });
