@@ -39,7 +39,7 @@ const StudentActions = ({ student, setStudent }) => {
     },
     {
       onSuccess: (res) => {
-        console.log("Updated", res);
+        console.log("Update student response", res);
         enqueueSnackbar(res.statusText, {
           variant: "success",
         });
@@ -90,7 +90,7 @@ const StudentActions = ({ student, setStudent }) => {
     },
     {
       onSuccess: (res) => {
-        console.log("Deleted", res);
+        console.log("Delete Students response", res);
         enqueueSnackbar(res.statusText, {
           variant: "success",
         });

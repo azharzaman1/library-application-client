@@ -13,7 +13,6 @@ import { parseISOString } from "../../utils";
 
 const Book = () => {
   const [book, setBook] = useState({});
-
   const params = useParams();
   const { bookID } = params;
 
@@ -29,7 +28,7 @@ const Book = () => {
     {
       enabled: false,
       onSuccess: (res) => {
-        console.log(res);
+        console.log("Fetch book response", res);
         setBook(res.data.found);
       },
       onError: (err) => {
@@ -40,10 +39,10 @@ const Book = () => {
       },
     }
   );
-
+  const [reRunEffect] = useState(false);
   useEffect(() => {
     fetchBook();
-  }, [false, fetchBook]);
+  }, [reRunEffect, fetchBook]);
 
   const isBorrowed = book.borrowedBy; //if borower name is defined, mean currently borrowed
 

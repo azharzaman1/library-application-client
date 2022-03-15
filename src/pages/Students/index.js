@@ -26,7 +26,7 @@ const Students = () => {
 
   const navigate = useNavigate();
 
-  // react-query get ll students
+  // react-query get all students
 
   const { isLoading, refetch: fetchStudents } = useQuery(
     "query-students",
@@ -36,7 +36,7 @@ const Students = () => {
     {
       enabled: false,
       onSuccess: (res) => {
-        console.log(res);
+        console.log("Get all students response", res);
         setStudents(res.data.found);
         const tableData = res.data.found.map((row, i) => ({
           id: i + 1,
@@ -69,7 +69,7 @@ const Students = () => {
     },
     {
       onSuccess: (res) => {
-        console.log(res);
+        console.log("Post student response", res);
         enqueueSnackbar(res.statusText, {
           variant: "success",
         });

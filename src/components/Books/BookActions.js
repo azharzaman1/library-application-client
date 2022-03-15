@@ -59,7 +59,7 @@ const BookActions = ({ book, setBook }) => {
     },
     {
       onSuccess: (res) => {
-        console.log("Updated", res);
+        console.log("Update Book Response", res);
         enqueueSnackbar(res.statusText, {
           variant: "success",
         });
@@ -111,7 +111,7 @@ const BookActions = ({ book, setBook }) => {
     },
     {
       onSuccess: (res) => {
-        console.log("Deleted", res);
+        console.log("Delete Book Response", res);
         enqueueSnackbar(res.statusText, {
           variant: "success",
         });

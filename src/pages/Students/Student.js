@@ -1,13 +1,5 @@
-import {
-  AddAlert,
-  CreditScore,
-  Delete,
-  Edit,
-  Email,
-  VisibilityOff,
-  WhatsApp,
-} from "@mui/icons-material";
-import { Button, Divider, Grid, IconButton, Tooltip } from "@mui/material";
+import { CreditScore, Email, WhatsApp } from "@mui/icons-material";
+import { Button, Divider, Grid } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
@@ -27,7 +19,6 @@ const Student = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   // fetching book info from database
-
   const { isLoading, refetch: fetchStudent } = useQuery(
     "query-student-by-slug",
     async () => {
@@ -36,7 +27,7 @@ const Student = () => {
     {
       enabled: false,
       onSuccess: (res) => {
-        console.log(res);
+        console.log("Fetch student response", res);
         setStudent(res.data.found);
       },
       onError: (err) => {
@@ -47,10 +38,10 @@ const Student = () => {
       },
     }
   );
-
+  const [reRunEffect] = useState(false);
   useEffect(() => {
     fetchStudent();
-  }, [false, fetchStudent]);
+  }, [reRunEffect, fetchStudent]);
 
   if (isLoading) {
     return <div>Loading...</div>;

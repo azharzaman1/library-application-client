@@ -40,7 +40,7 @@ const Books = () => {
 
   const queryClient = useQueryClient();
 
-  // react-query get ll students
+  // react-query get all books
 
   const { isLoading, refetch: fetchBooks } = useQuery(
     "query-books",
@@ -50,7 +50,7 @@ const Books = () => {
     {
       enabled: false,
       onSuccess: (res) => {
-        console.log(res);
+        console.log("Get all books response", res);
         setBooks(res.data.found);
         // converting data to format table is waiting for
         const tableData = res.data.found.map((row, i) => ({
@@ -75,10 +75,10 @@ const Books = () => {
       },
     }
   );
-
+  const [reRunEffect] = useState(false);
   useEffect(() => {
     fetchBooks();
-  }, [false, fetchBooks]);
+  }, [reRunEffect, fetchBooks]);
 
   // react-query post student
   const { mutate: postBook } = useMutation(
@@ -87,7 +87,7 @@ const Books = () => {
     },
     {
       onSuccess: (res) => {
-        console.log(res);
+        console.log("Post book response", res);
         enqueueSnackbar(res.statusText, {
           variant: "success",
         });
