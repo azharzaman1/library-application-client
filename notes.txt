@@ -1,6 +1,7 @@
 # Improvements 
+## Update slugs when slug of something gets updated 
 
 # Fixes
-## Delete Book Not found issue
+
 
 # Additions

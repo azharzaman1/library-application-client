@@ -14,7 +14,7 @@ export default function SelectLabels({ student, setStudent, setDBStudents }) {
   const { enqueueSnackbar } = useSnackbar();
 
   // react-query get all students
-  const { isLoading, refetch: fetchStudents } = useQuery(
+  const { refetch: fetchStudents } = useQuery(
     "query-students",
     async () => {
       return await axiosPrivate.get(`/api/v1/students`);
