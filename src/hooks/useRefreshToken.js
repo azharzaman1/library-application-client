@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import { axiosPrivate } from "../api/axios";
-import { LOGOUT, SET_USER } from "../redux/slices/userSlice";
+import { LOGOUT, SET_USER, SET_USER_TYPE } from "../redux/slices/userSlice";
 import useAuth from "./useAuth";
 
 const useRefreshToken = () => {
@@ -12,6 +12,7 @@ const useRefreshToken = () => {
       const response = await axiosPrivate.get("/api/v1/tokens/refresh");
       console.log("Refresh Token Response", response.data);
       dispatch(SET_USER({ ...currentUser, ...response.data }));
+      dispatch(SET_USER_TYPE(response.data.roles));
       return response.data.accessToken;
     } catch (err) {
       if (err.response.status === 403) {

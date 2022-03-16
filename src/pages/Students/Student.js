@@ -12,20 +12,14 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useAuth from "../../hooks/useAuth";
 import { getRandomInt } from "../../utils";
 import { userRoles } from "../../static/userRoles";
+import { selectUserType } from "../../redux/slices/userSlice";
+import { useSelector } from "react-redux";
 
 const Student = () => {
   const [student, setStudent] = useState({});
   const params = useParams();
   const { studentID } = params;
-  const currentUser = useAuth();
-
-  const isAdmin = currentUser?.roles?.Admin === userRoles.Admin ? true : false;
-  const isStudent =
-    currentUser?.roles?.Student === userRoles.Student ? true : false;
-  const isUser =
-    currentUser?.roles?.User === userRoles.User &&
-    currentUser?.roles?.Admin !== userRoles.Admin &&
-    currentUser?.roles?.Student !== userRoles.Student;
+  const userType = useSelector(selectUserType);
 
   const axiosPrivate = useAxiosPrivate();
   const { enqueueSnackbar } = useSnackbar();
@@ -73,7 +67,7 @@ const Student = () => {
               backgroundImage: `url('https://i.ibb.co/zrwjbvm/banner.jpg')`,
             }}
           >
-            {isAdmin && (
+            {userType === "Admin" && (
               <StudentActions student={student} setStudent={setStudent} />
             )}
           </div>
@@ -118,7 +112,7 @@ const Student = () => {
                   and inspiring book that traces his learning curve to a place
                   where outer success, inner happiness.
                 </Text>
-                {isAdmin && (
+                {userType === "Admin" && (
                   <div className="mt-2 w-full">
                     <Button
                       fullWidth
@@ -131,7 +125,7 @@ const Student = () => {
                 )}
               </div>
             </Grid>
-            {isAdmin || isStudent ? (
+            {userType === "Admin" || userType === "Student" ? (
               <Grid item xs={12} sm={10} md={5}>
                 <div className="flex flex-col px-2 py-3 border-2 rounded-md border-gray-200 bg-gray-100 shadow-sm lg:max-w-sm">
                   <Heading type="secondary">Contact details</Heading>

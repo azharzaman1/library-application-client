@@ -16,6 +16,7 @@ import {
   selectSessionPersist,
   SET_SESSION_PERSIST,
   SET_USER,
+  SET_USER_TYPE,
 } from "../../../redux/slices/userSlice";
 import Heading from "../../../components/Generic/Heading";
 import Container from "../../../components/Generic/Layout/Container";
@@ -47,6 +48,8 @@ const Login = () => {
         resetForm();
         setLoggingIn(false);
         dispatch(SET_USER(res.data.user));
+        dispatch(SET_USER_TYPE(res.data?.user?.roles));
+
         // if statusCode == 200, mean successful login
         res.status === 202 && navigate(from, { replace: true });
       },

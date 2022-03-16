@@ -7,27 +7,20 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import { palette } from "../../../theming/palette";
 import useAuth from "../../../hooks/useAuth";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import useLogout from "../../../hooks/useLogout";
-import { LOGOUT } from "../../../redux/slices/userSlice";
-import { userRoles } from "../../../static/userRoles";
+import { LOGOUT, selectUserType } from "../../../redux/slices/userSlice";
+import useLogin from "../../../hooks/useLogin";
 
 const UserMenu = () => {
   const dispatch = useDispatch();
   const currentUser = useAuth();
+  const userType = useSelector(selectUserType);
   const logout = useLogout();
-
-  const isAdmin = currentUser?.roles?.Admin === userRoles.Admin ? true : false;
-  const isStudent =
-    currentUser?.roles?.Student === userRoles.Student ? true : false;
-  const isUser =
-    currentUser?.roles?.User === userRoles.User &&
-    currentUser?.roles?.Admin !== userRoles.Admin &&
-    currentUser?.roles?.Student !== userRoles.Student;
+  const login = useLogin();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -36,6 +29,20 @@ const UserMenu = () => {
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleAccountSwitch = async (account) => {
+    try {
+      if (account === "Admin" && userType !== "Admin") {
+        await login({ email: "admin@lib.com", pswd: "admin" });
+      } else if (account === "Student" && userType !== "Student") {
+        await login({ email: "student@lib.com", pswd: "student" });
+      } else if (account === "User" && userType !== "User") {
+        await login({ email: "user@lib.com", pswd: "user" });
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const handleLogout = async () => {
@@ -98,13 +105,22 @@ const UserMenu = () => {
       >
         <div className="px-3 pt-2 pb-1">Switch account</div>
         <Divider className="py-1" />
-        <MenuItem sx={isAdmin && { bgcolor: palette.backgroundColor1 }}>
+        <MenuItem
+          onClick={() => handleAccountSwitch("Admin")}
+          sx={userType === "Admin" && { bgcolor: palette.backgroundColor1 }}
+        >
           <Avatar sx={{ bgcolor: palette.primary }}>A</Avatar> @Admin
         </MenuItem>
-        <MenuItem sx={isStudent && { bgcolor: palette.backgroundColor1 }}>
+        <MenuItem
+          onClick={() => handleAccountSwitch("Student")}
+          sx={userType === "Student" && { bgcolor: palette.backgroundColor1 }}
+        >
           <Avatar sx={{ bgcolor: palette.primary }}>S</Avatar> @Student
         </MenuItem>
-        <MenuItem sx={isUser && { bgcolor: palette.backgroundColor1 }}>
+        <MenuItem
+          onClick={() => handleAccountSwitch("User")}
+          sx={userType === "User" && { bgcolor: palette.backgroundColor1 }}
+        >
           <Avatar sx={{ bgcolor: palette.primary }}>U</Avatar> @User
         </MenuItem>
         <Divider />

@@ -23,8 +23,8 @@ import Text from "../../components/Generic/Text";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { bookTableColumns } from "../../static/booksTableColumns";
 import { parseISOString } from "../../utils";
-import useAuth from "../../hooks/useAuth";
-import { userRoles } from "../../static/userRoles";
+import { useSelector } from "react-redux";
+import { selectUserType } from "../../redux/slices/userSlice";
 
 const Books = () => {
   const [addNewDialogOpen, setAddNewDialogOpen] = useState(false);
@@ -38,11 +38,9 @@ const Books = () => {
   const [books, setBooks] = useState([]);
   const [tableData, setTableData] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
-  const currentUser = useAuth();
   const navigate = useNavigate();
 
-  const isAdmin = currentUser?.roles?.Admin ? true : false;
-
+  const userType = useSelector(selectUserType);
   const axiosPrivate = useAxiosPrivate();
   const queryClient = useQueryClient();
 
@@ -164,7 +162,7 @@ const Books = () => {
               <Heading type="tertiary" className="text-gray-100">
                 Books
               </Heading>
-              {isAdmin && (
+              {userType === "Admin" && (
                 <div className="appBar__right flex-1 flex justify-end">
                   <Button
                     color="primary"

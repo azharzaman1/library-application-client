@@ -13,6 +13,8 @@ import dashify from "dashify";
 import { useNavigate } from "react-router-dom";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useAuth from "../../hooks/useAuth";
+import { useSelector } from "react-redux";
+import { selectUserType } from "../../redux/slices/userSlice";
 
 const Students = () => {
   const [addNewDialogOpen, setAddNewDialogOpen] = useState(false);
@@ -24,9 +26,7 @@ const Students = () => {
   const [tableData, setTableData] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
-  const currentUser = useAuth();
-
-  const isAdmin = currentUser?.roles?.Admin ? true : false;
+  const userType = useSelector(selectUserType);
 
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
@@ -135,7 +135,7 @@ const Students = () => {
               <Heading type="tertiary" className="text-gray-100">
                 Students
               </Heading>
-              {isAdmin && (
+              {userType === "Admin" && (
                 <div className="appBar__right flex-1 flex justify-end">
                   <Button
                     color="primary"
