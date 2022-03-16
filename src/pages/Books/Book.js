@@ -1,5 +1,5 @@
-import { AddAlert } from "@mui/icons-material";
-import { Button, Divider, Grid } from "@mui/material";
+import { AddAlert, InsertLink } from "@mui/icons-material";
+import { Button, Divider, Grid, IconButton } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
@@ -9,10 +9,10 @@ import BookActions from "../../components/Books/BookActions";
 import Heading from "../../components/Generic/Heading";
 import Container from "../../components/Generic/Layout/Container";
 import Text from "../../components/Generic/Text";
-import useAuth from "../../hooks/useAuth";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { selectUserType } from "../../redux/slices/userSlice";
 import { parseISOString } from "../../utils";
+import { useNavigate } from "react-router-dom";
 
 const Book = () => {
   const userType = useSelector(selectUserType);
@@ -20,7 +20,7 @@ const Book = () => {
   const params = useParams();
   const { bookID } = params;
   const axiosPrivate = useAxiosPrivate();
-
+  const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 
   // fetching book info from database
@@ -48,7 +48,15 @@ const Book = () => {
     fetchBook();
   }, [reRunEffect, fetchBook]);
 
-  const isBorrowed = book.borrowedBy; //if borower name is defined, mean currently borrowed
+  const isBorrowed =
+    book?.student?.firstName || book.isBorrowed || book.borrowedBy; //if borower name is defined, mean currently borrowed
+
+  const currentBorrower = {
+    fullName: book?.student?.firstName
+      ? `${book?.student?.firstName} ${book?.student?.lastName}`
+      : book.borrowedBy,
+    slug: book?.student?.slug ? book?.student?.slug : null,
+  };
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -129,7 +137,16 @@ const Book = () => {
                   </Heading>
                   <div className="flex items-center space-x-3 mt-3">
                     <h2>Student: </h2>
-                    <Text bold>{book.borrowedBy}</Text>
+                    <Text
+                      bold
+                      onClick={() => {
+                        currentBorrower?.slug &&
+                          navigate(`/students/${currentBorrower?.slug}`);
+                      }}
+                      className="cursor-pointer hover:text-primary transition-colors duration-150"
+                    >
+                      {currentBorrower?.fullName}
+                    </Text>
                   </div>
                   <div className="flex items-center space-x-3 mt-3">
                     <h2>Borrowed On:</h2>
