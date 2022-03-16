@@ -16,7 +16,7 @@ export const muiTheme = createTheme({
       main: palette.secondary,
       dark: palette.secondaryDark,
       light: palette.secondaryLight,
-      contrastText: palette.backgroundColor1,
+      contrastText: palette.primaryText,
     },
 
     background: {

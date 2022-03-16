@@ -9,6 +9,7 @@ import {
   Grid,
   TextField,
   Toolbar,
+  Typography,
 } from "@mui/material";
 import dashify from "dashify";
 import { useSnackbar } from "notistack";
@@ -98,6 +99,7 @@ const Books = () => {
         resetForm();
         setPosting(false);
         setAddNewDialogOpen(false);
+        fetchBooks();
         queryClient.invalidateQueries("query-books");
         fetchBooks();
       },
@@ -159,9 +161,7 @@ const Books = () => {
             color="secondary"
           >
             <Toolbar className="flex items-center">
-              <Heading type="tertiary" className="text-gray-100">
-                Books
-              </Heading>
+              <Heading type="tertiary">Books</Heading>
               {userType === "Admin" && (
                 <div className="appBar__right flex-1 flex justify-end">
                   <Button

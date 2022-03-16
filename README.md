@@ -1,70 +1,91 @@
-# Getting Started with Create React App
+# MERN Stack Library Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Used technologies
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+### MERN Stack
 
-### `npm start`
+• <b>M</b>ongoDB\
+• <b>E</b>xpressJs\
+• <b>R</b>eactJs\
+• <b>N</b>odeJs
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+<br/>
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Frontend
 
-### `npm test`
+• ReactJs\
+• Mui(Material UI)\
+• Tailwind CSS\
+• Redux<br/>
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+<br/>
 
-### `npm run build`
+### Backend
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+• NodeJs\
+• ExpressJs\
+• JWT\
+• MongoDB
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+<br/>
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### APIs & Async
 
-### `npm run eject`
+• ExpressJs REST APIs\
+• Axios\
+• React Query
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+<br/>
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Features
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+---
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Frontend
 
-## Learn More
+• Can **add, view, delete, update** books in libaray\
+• Can **add, view, delete, update** students in libaray
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+<br/>
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Backend
 
-### Code Splitting
+• **Completely Secure Authentication** with **JWT** auth\
+• **Roles Based Prevented Routes** with **JWT** auth\
+• **MVC** (Modal, View, Controller) followed ExpressJs routing\
+• **API** fully follows Restful API criterias
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+<br />
 
-### Analyzing the Bundle Size
+### AUTH
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+• **Roles Based highly secure authetication** with **JWT**\
+• Trusted Device, Remember me feature \
+• Server Resources are **protected** completely to particular roles\
+• Only **ADMIN** can add, update and delete books and students,\
+• **Students** and **User** role can only view books\
+• Simple **User** role can only view books, not students profiles
 
-### Making a Progressive Web App
+**NOTE**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### Auth test credentials:
 
-### Advanced Configuration
+**Admin Account:**\
+email: admin@lib.com\
+password: admin
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+**Student Account:**\
+email: student@lib.com\
+password: student
 
-### Deployment
+**User Account:**\
+email: user@lib.com\
+password: user
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## LINKs
 
-### `npm run build` fails to minify
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+• **Backend Repo**: [https://github.com/azharzaman1/library-application-server](https://github.com/azharzaman1/library-application-server)

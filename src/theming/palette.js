@@ -2,9 +2,9 @@ const palette = {
   primary: "#E76F51",
   primaryLight: "rgb(235, 139, 115)",
   primaryDark: "rgb(161, 77, 56)",
-  secondary: "#38bdf8",
-  secondaryLight: "rgb(95, 202, 249)",
-  secondaryDark: "rgb(39, 132, 173)",
+  secondary: "#cbd5e1",
+  secondaryLight: "#e2e8f0",
+  secondaryDark: "#94a3b8",
 
   primaryText: "#1e293b",
   secondaryText: "#64748b",

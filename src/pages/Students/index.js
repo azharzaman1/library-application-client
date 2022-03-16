@@ -1,4 +1,12 @@
-import { AppBar, Box, Button, Grid, TextField, Toolbar } from "@mui/material";
+import {
+  AppBar,
+  Box,
+  Button,
+  Grid,
+  TextField,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 import { Add } from "@mui/icons-material";
 import Heading from "../../components/Generic/Heading";
 import Container from "../../components/Generic/Layout/Container";
@@ -81,6 +89,7 @@ const Students = () => {
         resetForm();
         setPosting(false);
         setAddNewDialogOpen(false);
+        fetchStudents();
         queryClient.invalidateQueries("query-students");
       },
       onError: (err) => {
@@ -132,9 +141,7 @@ const Students = () => {
             color="secondary"
           >
             <Toolbar className="flex items-center">
-              <Heading type="tertiary" className="text-gray-100">
-                Students
-              </Heading>
+              <Heading type="tertiary">Students</Heading>
               {userType === "Admin" && (
                 <div className="appBar__right flex-1 flex justify-end">
                   <Button
