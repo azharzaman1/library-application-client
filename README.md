@@ -57,7 +57,7 @@ In the header now you can Switch between accounts to test role based functionali
 
 ### MERN Stack
 
-• <b>M</b>ongoDB\
+• <b>M</b>ongoDB (asked HR before using this as replacement)\
 • <b>E</b>xpressJs\
 • <b>R</b>eactJs\
 • <b>N</b>odeJs
@@ -74,7 +74,7 @@ In the header now you can Switch between accounts to test role based functionali
 • NodeJs\
 • ExpressJs\
 • JWT\
-• MongoDB
+• MongoDB (asked HR before using this as replacement)
 
 ### APIs & Async
 
