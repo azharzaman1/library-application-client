@@ -55,16 +55,12 @@ In the header now you can Switch between accounts to test role based functionali
 
 ## Used technologies
 
----
-
 ### MERN Stack
 
 • <b>M</b>ongoDB\
 • <b>E</b>xpressJs\
 • <b>R</b>eactJs\
 • <b>N</b>odeJs
-
-<br/>
 
 ### Frontend
 
@@ -73,8 +69,6 @@ In the header now you can Switch between accounts to test role based functionali
 • Tailwind CSS\
 • Redux<br/>
 
-<br/>
-
 ### Backend
 
 • NodeJs\
@@ -82,26 +76,20 @@ In the header now you can Switch between accounts to test role based functionali
 • JWT\
 • MongoDB
 
-<br/>
-
 ### APIs & Async
 
 • ExpressJs REST APIs\
 • Axios\
 • React Query
 
-<br/>
 
 ## Features
-
----
 
 ### Frontend
 
 • Can **add, view, delete, update** books in libaray\
 • Can **add, view, delete, update** students in libaray
 
-<br/>
 
 ### Backend
 
@@ -110,7 +98,6 @@ In the header now you can Switch between accounts to test role based functionali
 • **MVC** (Modal, View, Controller) followed ExpressJs routing\
 • **API** fully follows Restful API criterias
 
-<br />
 
 ### AUTH
 
