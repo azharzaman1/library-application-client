@@ -8,7 +8,6 @@ import { muiTheme } from "./theming/muiTheme";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SnackbarProvider } from "notistack";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { ReactQueryDevtools } from "react-query/devtools";
 import store from "./redux/store";
 import "./index.css";
 
@@ -27,7 +26,6 @@ ReactDOM.render(
             </ThemeProvider>
           </SnackbarProvider>
         </Provider>
-        <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </BrowserRouter>
   </React.StrictMode>,
