@@ -26,6 +26,7 @@ import { bookTableColumns } from "../../static/booksTableColumns";
 import { parseISOString } from "../../utils";
 import { useSelector } from "react-redux";
 import { selectUserType } from "../../redux/slices/userSlice";
+import StudentSelect from "../../components/Books/StudentSelect";
 
 const Books = () => {
   const [addNewDialogOpen, setAddNewDialogOpen] = useState(false);
@@ -37,6 +38,7 @@ const Books = () => {
   const [returnDate, setReturnDate] = useState(new Date());
   const [posting, setPosting] = useState(false);
   const [books, setBooks] = useState([]);
+  const [student, setStudent] = useState("none");
   const [tableData, setTableData] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -44,6 +46,8 @@ const Books = () => {
   const userType = useSelector(selectUserType);
   const axiosPrivate = useAxiosPrivate();
   const queryClient = useQueryClient();
+
+  console.log(student);
 
   // react-query get all books
 
@@ -98,9 +102,17 @@ const Books = () => {
         });
         resetForm();
         setPosting(false);
+        // update student in db
+
         setAddNewDialogOpen(false);
         fetchBooks();
         queryClient.invalidateQueries("query-books");
+        if (student && res.status === 201) {
+          updateStudent({
+            borrowedBook: res.data.added?._id,
+          });
+        } else {
+        }
         fetchBooks();
       },
       onError: (err) => {
@@ -126,12 +138,33 @@ const Books = () => {
         author,
         isBorrowed: !available,
         borrowedBy,
+        studentSlug: student,
         borrowedOn: available ? "" : borrowedOn,
         returnDate: available ? "" : returnDate,
         slug,
       });
     }
   };
+
+  // react-query update student
+  const { mutate: updateStudent } = useMutation(
+    async (studentData) => {
+      return await axiosPrivate.put(`/api/v1/students/${student}`, studentData);
+    },
+    {
+      onSuccess: (res) => {
+        console.log("Update student response", res);
+        enqueueSnackbar(res.statusText, {
+          variant: "success",
+        });
+        setStudent("none");
+      },
+      onError: (err) => {
+        const statusText = err.response.statusText;
+        console.log(statusText);
+      },
+    }
+  );
 
   const resetForm = () => {
     setName("");
@@ -239,15 +272,21 @@ const Books = () => {
             {!available && (
               <Grid item container columnSpacing={2} rowSpacing={3}>
                 <Grid item sx={12}>
-                  <TextField
-                    fullWidth
-                    id="borrowed-by"
-                    label="Borrowed By"
-                    variant="outlined"
-                    value={borrowedBy}
-                    onChange={(e) => setBorrowedBy(e.target.value)}
-                  />
+                  <StudentSelect value={student} setValue={setStudent} />
                 </Grid>
+                {student === "none" && (
+                  <Grid item sx={12}>
+                    <TextField
+                      fullWidth
+                      id="student-name"
+                      label="Student name"
+                      variant="outlined"
+                      value={borrowedBy}
+                      onChange={(e) => setBorrowedBy(e.target.value)}
+                    />
+                  </Grid>
+                )}
+
                 <Grid item sx={12}>
                   <TextField
                     fullWidth

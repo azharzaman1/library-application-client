@@ -1,12 +1,4 @@
-import {
-  AppBar,
-  Box,
-  Button,
-  Grid,
-  TextField,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { AppBar, Box, Button, Grid, TextField, Toolbar } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import Heading from "../../components/Generic/Heading";
 import Container from "../../components/Generic/Layout/Container";
@@ -20,7 +12,6 @@ import { studentsTableColumns } from "../../static/studentsTableColumns";
 import dashify from "dashify";
 import { useNavigate } from "react-router-dom";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import useAuth from "../../hooks/useAuth";
 import { useSelector } from "react-redux";
 import { selectUserType } from "../../redux/slices/userSlice";
 
@@ -40,7 +31,6 @@ const Students = () => {
   const navigate = useNavigate();
 
   // react-query get all students
-
   const { isLoading, refetch: fetchStudents } = useQuery(
     "query-students",
     async () => {
