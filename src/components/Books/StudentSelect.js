@@ -8,7 +8,7 @@ import { useQuery } from "react-query";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useSnackbar } from "notistack";
 
-export default function SelectLabels({ value, setValue }) {
+export default function SelectLabels({ student, setStudent, setDBStudents }) {
   const axiosPrivate = useAxiosPrivate();
   const [students, setStudents] = React.useState();
   const { enqueueSnackbar } = useSnackbar();
@@ -23,6 +23,7 @@ export default function SelectLabels({ value, setValue }) {
       enabled: false,
       onSuccess: (res) => {
         console.log("Get all students response", res);
+        setDBStudents(res.data.found); // sending back to books page
         const dropdownData = res.data.found.map((item) => ({
           label: `${item?.firstName} ${item?.lastName}`,
           value: item?.slug,
@@ -39,7 +40,7 @@ export default function SelectLabels({ value, setValue }) {
   );
 
   const handleChange = (event) => {
-    setValue(event.target.value);
+    setStudent(event.target.value);
   };
 
   return (
@@ -50,7 +51,7 @@ export default function SelectLabels({ value, setValue }) {
       <Select
         labelId="demo-simple-select-helper-label"
         id="demo-simple-select-helper"
-        value={value}
+        value={student}
         label="Select Student"
         onChange={handleChange}
         onOpen={() => {

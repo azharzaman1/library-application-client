@@ -39,6 +39,7 @@ const Books = () => {
   const [posting, setPosting] = useState(false);
   const [books, setBooks] = useState([]);
   const [student, setStudent] = useState("none");
+  const [students, setStudents] = useState([]);
   const [tableData, setTableData] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -68,7 +69,11 @@ const Books = () => {
           name: row.name,
           author: row.author,
           isBorrowed: row.isBorrowed ? "No" : "Yes", //available
-          borrowedBy: row.borrowedBy || "-",
+          borrowedBy: row?.student?.firstName
+            ? `${row?.student?.firstName} ${row?.student?.lastName}`
+            : row.borrowedBy
+            ? row.borrowedBy
+            : "-",
           borrowedOn: row.isBorrowed ? parseISOString(row.borrowedOn) : "-", // if borrowed only then date
           returnDate: row.isBorrowed ? parseISOString(row.returnDate) : "-", // if borrowed only then date
         }));
@@ -136,12 +141,15 @@ const Books = () => {
     } else {
       setPosting(true);
       const slug = dashify(name);
+      const borrowingStudent = students.filter(
+        (stu) => stu.slug === student
+      )[0];
       postBook({
         name,
         author,
         isBorrowed: !available,
         borrowedBy,
-        studentSlug: student,
+        student: borrowingStudent,
         borrowedOn: available ? "" : borrowedOn,
         returnDate: available ? "" : returnDate,
         slug,
@@ -275,7 +283,11 @@ const Books = () => {
             {!available && (
               <Grid item container columnSpacing={2} rowSpacing={3}>
                 <Grid item sx={12}>
-                  <StudentSelect value={student} setValue={setStudent} />
+                  <StudentSelect
+                    student={student}
+                    setStudent={setStudent}
+                    setDBStudents={setStudents}
+                  />
                 </Grid>
                 {student === "none" && (
                   <Grid item sx={12}>
