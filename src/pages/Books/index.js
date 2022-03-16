@@ -62,15 +62,18 @@ const Books = () => {
         console.log("Get all books response", res);
         setBooks(res.data.found);
         // converting data to format table is waiting for
+
         const tableData = res.data.found.map((row, i) => ({
           id: i + 1,
           name: row.name,
           author: row.author,
-          isBorrowed: row.borrowedBy ? "No" : "Yes",
+          isBorrowed: row.isBorrowed ? "No" : "Yes", //available
           borrowedBy: row.borrowedBy || "-",
-          borrowedOn: row.borrowedBy ? parseISOString(row.borrowedOn) : "-", // if borrowed only then date
-          returnDate: row.borrowedBy ? parseISOString(row.returnDate) : "-", // if borrowed only then date
+          borrowedOn: row.isBorrowed ? parseISOString(row.borrowedOn) : "-", // if borrowed only then date
+          returnDate: row.isBorrowed ? parseISOString(row.returnDate) : "-", // if borrowed only then date
         }));
+
+        // fetch student details if slug is in one of the books
 
         setTableData(tableData);
         setPosting(false);
