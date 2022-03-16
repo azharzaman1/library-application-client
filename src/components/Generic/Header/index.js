@@ -6,7 +6,7 @@ import UserMenu from "./UserMenu";
 const Header = () => {
   const currentUser = useAuth();
   return (
-    <header className="flex justify-between px-3 md:px-6 lg:px-16 bg-white shadow border-b border-gray-200 py-3">
+    <header className="flex justify-between items-center px-3 md:px-6 lg:px-16 bg-white shadow border-b border-gray-200 py-3">
       <div>
         <h3 className="font-semibold text-xl">
           <Link to="/">Library Application</Link>
