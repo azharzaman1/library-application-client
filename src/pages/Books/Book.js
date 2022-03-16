@@ -8,7 +8,9 @@ import BookActions from "../../components/Books/BookActions";
 import Heading from "../../components/Generic/Heading";
 import Container from "../../components/Generic/Layout/Container";
 import Text from "../../components/Generic/Text";
+import useAuth from "../../hooks/useAuth";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import { userRoles } from "../../static/userRoles";
 import { parseISOString } from "../../utils";
 
 const Book = () => {
@@ -18,6 +20,16 @@ const Book = () => {
   const axiosPrivate = useAxiosPrivate();
 
   const { enqueueSnackbar } = useSnackbar();
+
+  const currentUser = useAuth();
+
+  const isAdmin = currentUser?.roles?.Admin === userRoles.Admin ? true : false;
+  const isStudent =
+    currentUser?.roles?.Student === userRoles.Student ? true : false;
+  const isUser =
+    currentUser?.roles?.User === userRoles.User &&
+    currentUser?.roles?.Admin !== userRoles.Admin &&
+    currentUser?.roles?.Student !== userRoles.Student;
 
   // fetching book info from database
 
@@ -65,14 +77,14 @@ const Book = () => {
               backgroundImage: `url('https://i.ibb.co/zrwjbvm/banner.jpg')`,
             }}
           >
-            <BookActions book={book} setBook={setBook} />
+            {isAdmin && <BookActions book={book} setBook={setBook} />}
           </div>
           {/* Details */}
           <Grid
             container
             rowSpacing={3}
             columnSpacing={2}
-            justifyContent={isBorrowed ? "center" : "start"}
+            justifyContent={isBorrowed && isAdmin ? "center" : "start"}
           >
             <Grid item xs={4} sm={4} md={2}>
               <div className="bg-gray-200 rounded-md shadow-md p-2">
@@ -112,7 +124,7 @@ const Book = () => {
                 )}
               </div>
             </Grid>
-            {isBorrowed && (
+            {isBorrowed && isAdmin ? (
               <Grid item xs={12} sm={10} md={5}>
                 <div className="flex flex-col px-2 py-3 border-2 rounded-md border-gray-200 bg-gray-100 shadow-sm lg:max-w-sm">
                   <Heading type="secondary">Borrow History</Heading>
@@ -134,6 +146,8 @@ const Book = () => {
                   </div>
                 </div>
               </Grid>
+            ) : (
+              <></>
             )}
           </Grid>
         </div>

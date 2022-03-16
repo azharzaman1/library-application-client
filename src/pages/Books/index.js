@@ -15,7 +15,6 @@ import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
-import axios from "../../api/axios";
 import Dialog from "../../components/Generic/Dialog";
 import Heading from "../../components/Generic/Heading";
 import Container from "../../components/Generic/Layout/Container";
@@ -24,6 +23,8 @@ import Text from "../../components/Generic/Text";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { bookTableColumns } from "../../static/booksTableColumns";
 import { parseISOString } from "../../utils";
+import useAuth from "../../hooks/useAuth";
+import { userRoles } from "../../static/userRoles";
 
 const Books = () => {
   const [addNewDialogOpen, setAddNewDialogOpen] = useState(false);
@@ -37,7 +38,10 @@ const Books = () => {
   const [books, setBooks] = useState([]);
   const [tableData, setTableData] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
+  const currentUser = useAuth();
   const navigate = useNavigate();
+
+  const isAdmin = currentUser?.roles?.Admin ? true : false;
 
   const axiosPrivate = useAxiosPrivate();
   const queryClient = useQueryClient();
@@ -160,16 +164,18 @@ const Books = () => {
               <Heading type="tertiary" className="text-gray-100">
                 Books
               </Heading>
-              <div className="appBar__right flex-1 flex justify-end">
-                <Button
-                  color="primary"
-                  variant="contained"
-                  endIcon={<Add />}
-                  onClick={() => setAddNewDialogOpen(true)}
-                >
-                  Add Book
-                </Button>
-              </div>
+              {isAdmin && (
+                <div className="appBar__right flex-1 flex justify-end">
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    endIcon={<Add />}
+                    onClick={() => setAddNewDialogOpen(true)}
+                  >
+                    Add Book
+                  </Button>
+                </div>
+              )}
             </Toolbar>
           </AppBar>
         </Box>

@@ -9,12 +9,23 @@ import Container from "../../components/Generic/Layout/Container";
 import Text from "../../components/Generic/Text";
 import StudentActions from "../../components/Students/StudentActions";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import useAuth from "../../hooks/useAuth";
 import { getRandomInt } from "../../utils";
+import { userRoles } from "../../static/userRoles";
 
 const Student = () => {
   const [student, setStudent] = useState({});
   const params = useParams();
   const { studentID } = params;
+  const currentUser = useAuth();
+
+  const isAdmin = currentUser?.roles?.Admin === userRoles.Admin ? true : false;
+  const isStudent =
+    currentUser?.roles?.Student === userRoles.Student ? true : false;
+  const isUser =
+    currentUser?.roles?.User === userRoles.User &&
+    currentUser?.roles?.Admin !== userRoles.Admin &&
+    currentUser?.roles?.Student !== userRoles.Student;
 
   const axiosPrivate = useAxiosPrivate();
   const { enqueueSnackbar } = useSnackbar();
@@ -62,7 +73,9 @@ const Student = () => {
               backgroundImage: `url('https://i.ibb.co/zrwjbvm/banner.jpg')`,
             }}
           >
-            <StudentActions student={student} setStudent={setStudent} />
+            {isAdmin && (
+              <StudentActions student={student} setStudent={setStudent} />
+            )}
           </div>
           {/* Details */}
           <Grid
@@ -105,37 +118,43 @@ const Student = () => {
                   and inspiring book that traces his learning curve to a place
                   where outer success, inner happiness.
                 </Text>
-                <div className="mt-2 w-full">
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    startIcon={<CreditScore />}
-                  >
-                    View Score Card
-                  </Button>
-                </div>
+                {isAdmin && (
+                  <div className="mt-2 w-full">
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      startIcon={<CreditScore />}
+                    >
+                      View Score Card
+                    </Button>
+                  </div>
+                )}
               </div>
             </Grid>
-            <Grid item xs={12} sm={10} md={5}>
-              <div className="flex flex-col px-2 py-3 border-2 rounded-md border-gray-200 bg-gray-100 shadow-sm lg:max-w-sm">
-                <Heading type="secondary">Contact details</Heading>
-                <Divider className="py-1" />
-                <div className="mt-4 w-full">
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    startIcon={<WhatsApp />}
-                  >
-                    Whatsapp (0317-0460466)
-                  </Button>
+            {isAdmin || isStudent ? (
+              <Grid item xs={12} sm={10} md={5}>
+                <div className="flex flex-col px-2 py-3 border-2 rounded-md border-gray-200 bg-gray-100 shadow-sm lg:max-w-sm">
+                  <Heading type="secondary">Contact details</Heading>
+                  <Divider className="py-1" />
+                  <div className="mt-4 w-full">
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      startIcon={<WhatsApp />}
+                    >
+                      Whatsapp (0317-0460466)
+                    </Button>
+                  </div>
+                  <div className="mt-4 w-full">
+                    <Button fullWidth variant="contained" startIcon={<Email />}>
+                      Email (azharzaman.001@gmail.com)
+                    </Button>
+                  </div>
                 </div>
-                <div className="mt-4 w-full">
-                  <Button fullWidth variant="contained" startIcon={<Email />}>
-                    Email (azharzaman.001@gmail.com)
-                  </Button>
-                </div>
-              </div>
-            </Grid>
+              </Grid>
+            ) : (
+              <></>
+            )}
           </Grid>
         </div>
       </Container>

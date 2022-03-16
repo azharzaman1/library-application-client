@@ -14,11 +14,20 @@ import useAuth from "../../../hooks/useAuth";
 import { useDispatch } from "react-redux";
 import useLogout from "../../../hooks/useLogout";
 import { LOGOUT } from "../../../redux/slices/userSlice";
+import { userRoles } from "../../../static/userRoles";
 
 const UserMenu = () => {
   const dispatch = useDispatch();
   const currentUser = useAuth();
   const logout = useLogout();
+
+  const isAdmin = currentUser?.roles?.Admin === userRoles.Admin ? true : false;
+  const isStudent =
+    currentUser?.roles?.Student === userRoles.Student ? true : false;
+  const isUser =
+    currentUser?.roles?.User === userRoles.User &&
+    currentUser?.roles?.Admin !== userRoles.Admin &&
+    currentUser?.roles?.Student !== userRoles.Student;
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -87,19 +96,18 @@ const UserMenu = () => {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem>
-          <Avatar sx={{ bgcolor: palette.primary }}>
-            {currentUser?.username?.split("")[0].toUpperCase() || "U"}
-          </Avatar>{" "}
-          Profile
+        <div className="px-3 pt-2 pb-1">Switch account</div>
+        <Divider className="py-1" />
+        <MenuItem sx={isAdmin && { bgcolor: palette.backgroundColor1 }}>
+          <Avatar sx={{ bgcolor: palette.primary }}>A</Avatar> @Admin
+        </MenuItem>
+        <MenuItem sx={isStudent && { bgcolor: palette.backgroundColor1 }}>
+          <Avatar sx={{ bgcolor: palette.primary }}>S</Avatar> @Student
+        </MenuItem>
+        <MenuItem sx={isUser && { bgcolor: palette.backgroundColor1 }}>
+          <Avatar sx={{ bgcolor: palette.primary }}>U</Avatar> @User
         </MenuItem>
         <Divider />
-        <MenuItem>
-          <ListItemIcon>
-            <Settings fontSize="small" />
-          </ListItemIcon>
-          Settings
-        </MenuItem>
         <MenuItem onClick={handleLogout}>
           <ListItemIcon>
             <Logout fontSize="small" className="rotate-180" />
