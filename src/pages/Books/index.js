@@ -109,8 +109,6 @@ const Books = () => {
         });
         resetForm();
         setPosting(false);
-        // update student in db
-
         setAddNewDialogOpen(false);
         fetchBooks();
         queryClient.invalidateQueries("query-books");
@@ -164,9 +162,6 @@ const Books = () => {
     {
       onSuccess: (res) => {
         console.log("Update student response", res);
-        enqueueSnackbar(res.statusText, {
-          variant: "success",
-        });
         setStudent("none");
       },
       onError: (err) => {

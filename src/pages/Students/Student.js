@@ -2,16 +2,14 @@ import { CreditScore, Email, WhatsApp } from "@mui/icons-material";
 import { Button, Divider, Grid } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
-import { useQuery } from "react-query";
-import { useParams } from "react-router-dom";
+import { useMutation, useQuery } from "react-query";
+import { useNavigate, useParams } from "react-router-dom";
 import Heading from "../../components/Generic/Heading";
 import Container from "../../components/Generic/Layout/Container";
 import Text from "../../components/Generic/Text";
 import StudentActions from "../../components/Students/StudentActions";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import useAuth from "../../hooks/useAuth";
-import { getRandomInt } from "../../utils";
-import { userRoles } from "../../static/userRoles";
+import { getRandomInt, parseISOString } from "../../utils";
 import { selectUserType } from "../../redux/slices/userSlice";
 import { useSelector } from "react-redux";
 
@@ -20,6 +18,7 @@ const Student = () => {
   const params = useParams();
   const { studentID } = params;
   const userType = useSelector(selectUserType);
+  const [books, setBooks] = useState([]);
 
   const axiosPrivate = useAxiosPrivate();
   const { enqueueSnackbar } = useSnackbar();
@@ -32,8 +31,10 @@ const Student = () => {
     },
     {
       enabled: false,
-      onSuccess: (res) => {
+      onSuccess: async (res) => {
         console.log("Fetch student response", res);
+        await fetchUserBooks({ ids: res.data.found.borrowedBooks });
+        console.log(res.data.found.borrowedBooks);
         setStudent(res.data.found);
       },
       onError: (err) => {
@@ -48,6 +49,23 @@ const Student = () => {
   useEffect(() => {
     fetchStudent();
   }, [reRunEffect, fetchStudent]);
+
+  // react-query update student
+  const { mutate: fetchUserBooks } = useMutation(
+    async (booksIDs) => {
+      return await axiosPrivate.post(`/api/v1/books/many`, booksIDs);
+    },
+    {
+      onSuccess: (res) => {
+        console.log("User books response", res);
+        setBooks(res.data.result);
+      },
+      onError: (err) => {
+        const statusText = err.response.statusText;
+        console.log(statusText);
+      },
+    }
+  );
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -88,7 +106,7 @@ const Student = () => {
               </div>
             </Grid>
             <Grid item xs={8} sm={8} md={5}>
-              <div className="flex flex-col px-3 py-3 border-2 rounded-md border-gray-100 bg-primary bg-opacity-25 lg:max-w-md shadow-sm">
+              <div className="flex flex-col px-3 py-3 border-2 rounded-md border-gray-100 bg-primary bg-opacity-25 shadow-sm lg:max-w-lg">
                 <Heading type="secondary">
                   {student.firstName} {student.lastName}
                 </Heading>
@@ -126,32 +144,83 @@ const Student = () => {
               </div>
             </Grid>
             {userType === "Admin" || userType === "Student" ? (
-              <Grid item xs={12} sm={10} md={5}>
-                <div className="flex flex-col px-2 py-3 border-2 rounded-md border-gray-200 bg-gray-100 shadow-sm lg:max-w-sm">
-                  <Heading type="secondary">Contact details</Heading>
-                  <Divider className="py-1" />
-                  <div className="mt-4 w-full">
-                    <Button
-                      fullWidth
-                      variant="contained"
-                      startIcon={<WhatsApp />}
-                    >
-                      Whatsapp (0317-0460466)
-                    </Button>
+              <>
+                {student?.borrowedBooks?.length > 0 && (
+                  <Grid item xs={12} sm={10} md={5}>
+                    <div className="flex flex-col px-3 py-3 border-2 rounded-md border-gray-100 bg-secondary bg-opacity-25 shadow lg:max-w-md">
+                      <Heading type="secondary">Borrowed Books</Heading>
+                      <Divider className="py-1" />
+                      <div className="mt-4 w-full">
+                        {books?.length > 0 &&
+                          books.map((book) => <Book book={book} />)}
+                      </div>
+                    </div>
+                  </Grid>
+                )}
+
+                <Grid item xs={12} sm={10} md={5}>
+                  <div className="flex flex-col px-2 py-3 border-2 rounded-md border-gray-200 bg-gray-100 shadow-sm lg:max-w-md">
+                    <Heading type="secondary">Contact details</Heading>
+                    <Divider className="py-1" />
+                    <div className="mt-4 w-full">
+                      <Button
+                        fullWidth
+                        variant="contained"
+                        startIcon={<WhatsApp />}
+                      >
+                        Whatsapp (0317-0460466)
+                      </Button>
+                    </div>
+                    <div className="mt-4 w-full">
+                      <Button
+                        fullWidth
+                        variant="contained"
+                        startIcon={<Email />}
+                      >
+                        Email (azharzaman.001@gmail.com)
+                      </Button>
+                    </div>
                   </div>
-                  <div className="mt-4 w-full">
-                    <Button fullWidth variant="contained" startIcon={<Email />}>
-                      Email (azharzaman.001@gmail.com)
-                    </Button>
-                  </div>
-                </div>
-              </Grid>
+                </Grid>
+              </>
             ) : (
               <></>
             )}
           </Grid>
         </div>
       </Container>
+    </div>
+  );
+};
+
+const Book = ({ book }) => {
+  const navigate = useNavigate();
+  return (
+    <div>
+      <div className="flex items-center space-x-3">
+        <h2>Book: </h2>
+        <Text
+          bold
+          onClick={() => {
+            book.slug && navigate(`/books/${book.slug}`);
+          }}
+          className="cursor-pointer hover:text-primary transition-colors duration-150"
+        >
+          {book?.name}
+        </Text>
+      </div>
+      <div className="flex items-center space-x-3 mt-2">
+        <h2>Author: </h2>
+        <Text bold>{book?.author}</Text>
+      </div>
+      <div className="flex items-center space-x-3 mt-3">
+        <h2>Borrowed On:</h2>
+        <Text bold>{parseISOString(book?.borrowedOn)}</Text>
+      </div>
+      <div className="flex items-center space-x-3 mt-3">
+        <h2>Return Date(expected):</h2>
+        <Text bold>{parseISOString(book?.returnDate)}</Text>
+      </div>
     </div>
   );
 };
