@@ -34,7 +34,7 @@ const Student = () => {
       onSuccess: async (res) => {
         console.log("Fetch student response", res);
         await fetchUserBooks({ ids: res.data.found.borrowedBooks });
-        console.log(res.data.found.borrowedBooks);
+        console.log("User Borrowed Books", res.data.found.borrowedBooks);
         setStudent(res.data.found);
       },
       onError: (err) => {
@@ -148,7 +148,9 @@ const Student = () => {
                 {student?.borrowedBooks?.length > 0 && (
                   <Grid item xs={12} sm={10} md={5}>
                     <div className="flex flex-col px-3 py-3 border-2 rounded-md border-gray-100 bg-secondary bg-opacity-25 shadow lg:max-w-md">
-                      <Heading type="secondary">Borrowed Books</Heading>
+                      <Heading type="secondary">
+                        Borrowed Books(working on it)
+                      </Heading>
                       <Divider className="py-1" />
                       <div className="mt-4 w-full">
                         {books?.length > 0 &&

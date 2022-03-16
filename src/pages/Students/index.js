@@ -71,16 +71,16 @@ const Students = () => {
       return await axiosPrivate.post("/api/v1/students", studentData);
     },
     {
-      onSuccess: (res) => {
+      onSuccess: async (res) => {
         console.log("Post student response", res);
+        await fetchStudents();
+        queryClient.invalidateQueries("query-students");
         enqueueSnackbar(res.statusText, {
           variant: "success",
         });
         resetForm();
         setPosting(false);
         setAddNewDialogOpen(false);
-        fetchStudents();
-        queryClient.invalidateQueries("query-students");
       },
       onError: (err) => {
         const statusText = err.response.statusText;
