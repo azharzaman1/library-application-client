@@ -19,7 +19,7 @@ const UserMenu = () => {
   const currentUser = useAuth();
   const userType = useSelector(selectUserType);
   const logout = useLogout();
-  const { loading, data, login } = useLogin();
+  const { login } = useLogin();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
