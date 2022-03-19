@@ -11,8 +11,9 @@ const useRefreshToken = () => {
     try {
       const response = await axiosPrivate.get("/api/v1/tokens/refresh");
       console.log("Refresh Token Response", response.data);
-      dispatch(SET_USER({ ...currentUser, ...response.data }));
-      dispatch(SET_USER_TYPE(response.data.roles));
+      const roles = Object.values(response.data.roles);
+      dispatch(SET_USER({ ...currentUser, ...response.data, roles }));
+      dispatch(SET_USER_TYPE(roles));
       return response.data.accessToken;
     } catch (err) {
       if (err.response.status === 403) {

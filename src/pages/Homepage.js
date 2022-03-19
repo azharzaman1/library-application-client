@@ -1,5 +1,3 @@
-import { Button } from "@mui/material";
-import Heading from "../components/Generic/Heading";
 import Container from "../components/Generic/Layout/Container";
 import Hero from "../components/Home/Hero";
 

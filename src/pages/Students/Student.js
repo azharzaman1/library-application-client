@@ -1,4 +1,4 @@
-import { CreditScore, Email, WhatsApp } from "@mui/icons-material";
+import { CreditScore } from "@mui/icons-material";
 import { Button, Divider, Grid } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";

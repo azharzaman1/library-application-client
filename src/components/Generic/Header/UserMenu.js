@@ -10,17 +10,16 @@ import Tooltip from "@mui/material/Tooltip";
 import Logout from "@mui/icons-material/Logout";
 import { palette } from "../../../theming/palette";
 import useAuth from "../../../hooks/useAuth";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import useLogout from "../../../hooks/useLogout";
-import { LOGOUT, selectUserType } from "../../../redux/slices/userSlice";
+import { selectUserType } from "../../../redux/slices/userSlice";
 import useLogin from "../../../hooks/useLogin";
 
 const UserMenu = () => {
-  const dispatch = useDispatch();
   const currentUser = useAuth();
   const userType = useSelector(selectUserType);
   const logout = useLogout();
-  const login = useLogin();
+  const { loading, data, login } = useLogin();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -47,7 +46,6 @@ const UserMenu = () => {
 
   const handleLogout = async () => {
     await logout();
-    dispatch(LOGOUT());
   };
 
   return (

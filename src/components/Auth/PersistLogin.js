@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth";
 import useRefreshToken from "../../hooks/useRefreshToken";
 import { useDispatch, useSelector } from "react-redux";
-import { selectSessionPersist, SET_USER } from "../../redux/slices/userSlice";
+import { selectSessionPersist } from "../../redux/slices/userSlice";
 
 const PersistLogin = () => {
   const dispatch = useDispatch();

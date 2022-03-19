@@ -3,7 +3,7 @@ import { Button, Grid, TextField } from "@mui/material";
 import Heading from "../../../components/Generic/Heading";
 import Container from "../../../components/Generic/Layout/Container";
 import Text from "../../../components/Generic/Text";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import axios from "../../../api/axios";
 import { useSnackbar } from "notistack";
@@ -14,7 +14,6 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [registering, setRegistering] = useState(false);
 
-  const location = useLocation();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 

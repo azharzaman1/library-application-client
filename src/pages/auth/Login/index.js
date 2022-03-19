@@ -31,6 +31,7 @@ const Login = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
+  console.log(location.state?.from?.pathname);
   const from = location.state?.from?.pathname || "/";
   const { enqueueSnackbar } = useSnackbar();
 
@@ -47,8 +48,9 @@ const Login = () => {
         });
         resetForm();
         setLoggingIn(false);
-        dispatch(SET_USER(res.data.user));
-        dispatch(SET_USER_TYPE(res.data?.user?.roles));
+        const roles = Object.values(res.data.user.roles);
+        dispatch(SET_USER({ ...res.data.user, roles }));
+        dispatch(SET_USER_TYPE(roles));
 
         // if statusCode == 200, mean successful login
         res.status === 202 && navigate(from, { replace: true });

@@ -32,16 +32,15 @@ export const userSlice = createSlice({
     SET_USER_TYPE: (state, action) => {
       return {
         ...state,
-        userType:
-          action.payload?.Admin === userRoles.Admin
-            ? "Admin"
-            : action.payload?.Student === userRoles.Student
-            ? "Student"
-            : action.payload?.User === userRoles.User &&
-              action.payload?.Admin !== userRoles.Admin &&
-              action.payload?.Student !== userRoles.Student
-            ? "User"
-            : "",
+        userType: action?.payload?.includes(userRoles.Admin)
+          ? "Admin"
+          : action?.payload?.includes(userRoles.Student)
+          ? "Student"
+          : action?.payload?.includes(userRoles.Student) &&
+            !action?.payload?.includes(userRoles.Admin) &&
+            !action?.payload?.includes(userRoles.Student)
+          ? "User"
+          : "",
       };
     },
   },

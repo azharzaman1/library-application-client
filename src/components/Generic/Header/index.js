@@ -27,6 +27,7 @@ const Header = () => {
             Books
           </Link>
         </nav>
+
         <Divider orientation="vertical" flexItem />
         <div className="user-nav">
           {currentUser ? (
