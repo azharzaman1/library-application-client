@@ -7,6 +7,7 @@ import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import Books from "./pages/Books";
 import Book from "./pages/Books/Book";
+import DesignKit from "./pages/DesignKit";
 import Homepage from "./pages/Homepage";
 import Students from "./pages/Students";
 import Student from "./pages/Students/Student";
@@ -16,6 +17,7 @@ function App() {
   return (
     <Routes>
       {/* public routes */}
+      <Route path="design-kit" element={<DesignKit />} />
       <Route path="auth">
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />

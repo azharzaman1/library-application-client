@@ -1,3 +1,24 @@
+:root {
+  --clr-primary: #e76f51;
+  --clr-primary-light: rgb(235, 139, 115);
+  --clr-primary-dark: rgb(161, 77, 56);
+  --clr-secondary: #cbd5e1;
+  --clr-secondary-light: #e2e8f0;
+  --clr-secondary-dark: #94a3b8;
+
+  --clr-primary-text: #1e293b;
+  --clr-seconodary-text: #334155;
+  --clr-info-text: #475569;
+
+  --clr-primary-text-dark: #e2e8f0;
+  --clr-seconodary-text-dark: #a0aec0;
+  --clr-info-text-dark: #94a3b8;
+
+  --clr-background-main: #252c48;
+  --clr-background-light: #394264;
+  --clr-background-accent: #011627;
+}
+
 *,
 *::before,
 *::after {
