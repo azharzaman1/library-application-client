@@ -91,7 +91,7 @@ const Book = () => {
             <Grid item xs={4} sm={4} md={2}>
               <div className="bg-gray-200 rounded-md shadow-md p-2">
                 <img
-                  src="https://m.media-amazon.com/images/I/61gS6EWmWwL.jpg"
+                  src="https://i.ibb.co/LxHZZXX/placeholde-image.jpg"
                   alt={book.name}
                   className="w-full rounded-md"
                 />
