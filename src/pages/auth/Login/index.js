@@ -2,9 +2,15 @@ import { useEffect, useState } from "react";
 import {
   Button,
   Checkbox,
+  FormControl,
   FormControlLabel,
   FormGroup,
+  FormHelperText,
   Grid,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
   TextField,
 } from "@mui/material";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -18,6 +24,8 @@ import {
   SET_USER,
   SET_USER_TYPE,
 } from "../../../redux/slices/userSlice";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Heading from "../../../components/Generic/Heading";
 import Container from "../../../components/Generic/Layout/Container";
 import Text from "../../../components/Generic/Text";
@@ -26,6 +34,7 @@ const Login = () => {
   const persistSession = useSelector(selectSessionPersist);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loggingIn, setLoggingIn] = useState(false);
 
   const dispatch = useDispatch();
@@ -89,6 +98,14 @@ const Login = () => {
     localStorage.setItem("library-application-session-persist", persistSession);
   }, [persistSession]);
 
+  const handleClickShowPassword = () => {
+    setShowPassword((prev) => !prev);
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen">
       <Container maxWidth={false}>
@@ -112,20 +129,40 @@ const Login = () => {
                   id="email-input"
                   label="Email address"
                   variant="outlined"
+                  helperText="Test email: admin@library.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  type="password"
-                  id="fullname-input"
-                  label="Password"
-                  variant="outlined"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
+                <FormControl variant="outlined" fullWidth>
+                  <InputLabel htmlFor="login-password-input">
+                    Password
+                  </InputLabel>
+                  <OutlinedInput
+                    id="login-password-input"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    label="Password"
+                    aria-describedby="login-password-helper-text"
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                  />
+                  <FormHelperText id="login-password-helper-text">
+                    Test password: admin
+                  </FormHelperText>
+                </FormControl>
               </Grid>
               <Grid item xs={12}>
                 <FormGroup>

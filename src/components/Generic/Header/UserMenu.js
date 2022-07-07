@@ -33,11 +33,11 @@ const UserMenu = () => {
   const handleAccountSwitch = async (account) => {
     try {
       if (account === "Admin" && userType !== "Admin") {
-        await login({ email: "admin@lib.com", pswd: "admin" });
+        login({ email: "admin@library.com", pswd: "admin" });
       } else if (account === "Student" && userType !== "Student") {
-        await login({ email: "student@lib.com", pswd: "student" });
+        login({ email: "student@gmail.com", pswd: "student" });
       } else if (account === "User" && userType !== "User") {
-        await login({ email: "user@lib.com", pswd: "user" });
+        login({ email: "user@gmail.com", pswd: "user" });
       }
     } catch (err) {
       console.log(err);

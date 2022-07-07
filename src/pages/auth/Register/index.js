@@ -1,5 +1,14 @@
 import { useState } from "react";
-import { Button, Grid, TextField } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  Grid,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+  TextField,
+} from "@mui/material";
 import Heading from "../../../components/Generic/Heading";
 import Container from "../../../components/Generic/Layout/Container";
 import Text from "../../../components/Generic/Text";
@@ -7,11 +16,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import axios from "../../../api/axios";
 import { useSnackbar } from "notistack";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import Visibility from "@mui/icons-material/Visibility";
 
 const Register = () => {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [registering, setRegistering] = useState(false);
 
   const navigate = useNavigate();
@@ -61,6 +73,14 @@ const Register = () => {
     setPassword("");
   };
 
+  const handleClickShowPassword = () => {
+    setShowPassword((prev) => !prev);
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen">
       <Container maxWidth={false}>
@@ -80,6 +100,7 @@ const Register = () => {
                   autoFocus
                   fullWidth
                   type="text"
+                  name="username"
                   id="username-input"
                   label="Username"
                   variant="outlined"
@@ -96,6 +117,7 @@ const Register = () => {
                   fullWidth
                   autoComplete={false}
                   type="email"
+                  name="email"
                   id="email-input"
                   label="Email address"
                   variant="outlined"
@@ -104,15 +126,30 @@ const Register = () => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  type="password"
-                  id="fullname-input"
-                  label="Password"
-                  variant="outlined"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
+                <FormControl fullWidth variant="outlined">
+                  <InputLabel htmlFor="login-password-input">
+                    Password
+                  </InputLabel>
+                  <OutlinedInput
+                    id="login-password-input"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                    label="Password"
+                  />
+                </FormControl>
               </Grid>
               <input type="submit" className="hidden" />
               <Grid item xs={12}>
