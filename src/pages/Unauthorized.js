@@ -12,7 +12,13 @@ const Unauthorized = () => {
             If you are sure you have access, please contact admin
           </Heading>
           <div className="mt-4 flex items-center space-x-2">
-            <Chip>azharzaman.001@gmail.com</Chip>
+            <a
+              href="mailto:azhar.works1@gmail.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Chip>azhar.works1@gmail.com</Chip>
+            </a>
           </div>
         </div>
       </Container>
