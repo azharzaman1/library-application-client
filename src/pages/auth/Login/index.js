@@ -74,7 +74,8 @@ const Login = () => {
     }
   );
 
-  const handleLogin = () => {
+  const handleLogin = (e) => {
+    e.preventDefault();
     if (email && password) {
       setLoggingIn(true);
 

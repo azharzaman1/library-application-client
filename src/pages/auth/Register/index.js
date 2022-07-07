@@ -55,7 +55,8 @@ const Register = () => {
     }
   );
 
-  const handleRegister = () => {
+  const handleRegister = (e) => {
+    e.preventDefault();
     if (email && password && userName) {
       setRegistering(true);
 
