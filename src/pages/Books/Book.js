@@ -43,10 +43,9 @@ const Book = () => {
       },
     }
   );
-  const [reRunEffect] = useState(false);
   useEffect(() => {
     fetchBook();
-  }, [reRunEffect, fetchBook]);
+  }, [fetchBook]);
 
   const isBorrowed =
     book?.student?.firstName || book.isBorrowed || book.borrowedBy; //if borower name is defined, mean currently borrowed

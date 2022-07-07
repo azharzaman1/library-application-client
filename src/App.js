@@ -26,13 +26,7 @@ function App() {
       <Route path="/" element={<Layout />}>
         <Route element={<PersistLogin />}>
           <Route index element={<Homepage />} />
-          <Route
-            element={
-              <RequireAuth
-                allowedRoles={[userRoles.Admin, userRoles.Student]}
-              />
-            }
-          >
+          <Route element={<RequireAuth allowedRoles={[userRoles.Admin]} />}>
             <Route path="students">
               <Route index element={<Students />}></Route>
               <Route path=":studentID" element={<Student />}></Route>

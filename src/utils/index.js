@@ -19,3 +19,13 @@ export const parseISOString = (string, seperator = "/") => {
 
   return `${year}${seperator}${month}${seperator}${dt}`;
 };
+
+export const filterTableColumns = (columns, allowed = []) => {
+  const allColumns = [...columns];
+  let result = [];
+  for (let i = 0; i < allowed?.length; i++) {
+    const found = allColumns.find((column) => column.field === allowed[i]);
+    result.push(found);
+  }
+  return result;
+};

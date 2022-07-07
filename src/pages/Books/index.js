@@ -9,6 +9,7 @@ import {
   Grid,
   TextField,
   Toolbar,
+  Typography,
 } from "@mui/material";
 import dashify from "dashify";
 import { useSnackbar } from "notistack";
@@ -18,14 +19,15 @@ import { useNavigate } from "react-router-dom";
 import Dialog from "../../components/Generic/Dialog";
 import Heading from "../../components/Generic/Heading";
 import Container from "../../components/Generic/Layout/Container";
-import StudentsTable from "../../components/Generic/Table";
+import BooksTable from "../../components/Generic/Table";
 import Text from "../../components/Generic/Text";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { bookTableColumns } from "../../static/booksTableColumns";
-import { parseISOString } from "../../utils";
+import { filterTableColumns, parseISOString } from "../../utils";
 import { useSelector } from "react-redux";
 import { selectUserType } from "../../redux/slices/userSlice";
 import StudentSelect from "../../components/Books/StudentSelect";
+import { allowedColumns } from "../../static/allowedBookColumns";
 
 const Books = () => {
   const [addNewDialogOpen, setAddNewDialogOpen] = useState(false);
@@ -216,8 +218,11 @@ const Books = () => {
           </AppBar>
         </Box>
         <main className="mt-2">
-          <StudentsTable
-            columns={bookTableColumns}
+          <BooksTable
+            columns={filterTableColumns(
+              bookTableColumns,
+              allowedColumns[userType]
+            )}
             completeData={books}
             tableData={tableData}
             loading={isLoading}
@@ -226,111 +231,140 @@ const Books = () => {
         </main>
       </Container>
       {/* Add New Book dialog */}
-      <Dialog
-        dialogTitle="Add New Book"
-        open={addNewDialogOpen}
-        setOpen={setAddNewDialogOpen}
-        confirmAction={handleSaveBook}
-        confirmActionLabel={posting ? "Adding..." : "Add Book"}
-        discardActionLabel="Discard"
-      >
-        {/* Dialog Content */}
-        <div>
-          <div className="pb-5">
-            <Text>Fill in info and hit Add New</Text>
-          </div>
-          <Grid container columnSpacing={2} rowSpacing={2}>
-            <Grid item sx={12}>
-              <TextField
-                autoFocus
-                fullWidth
-                id="book-name"
-                label="Book Name"
-                variant="outlined"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </Grid>
-            <Grid item sx={12}>
-              <TextField
-                fullWidth
-                id="author-name"
-                label="Author Name"
-                variant="outlined"
-                value={author}
-                onChange={(e) => setAuthor(e.target.value)}
-              />
-            </Grid>
-            <Grid item sx={12}>
-              <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={available}
-                      onChange={handleAvailableChange}
-                    />
-                  }
-                  label="Available for borrow"
-                />
-              </FormGroup>
-            </Grid>
-            {!available && (
-              <Grid item container columnSpacing={2} rowSpacing={3}>
-                <Grid item sx={12}>
-                  <StudentSelect
-                    student={student}
-                    setStudent={setStudent}
-                    setDBStudents={setStudents}
-                  />
-                </Grid>
-                {student === "none" && (
-                  <Grid item sx={12}>
-                    <TextField
-                      fullWidth
-                      id="student-name"
-                      label="Student name"
-                      variant="outlined"
-                      value={borrowedBy}
-                      onChange={(e) => setBorrowedBy(e.target.value)}
-                    />
-                  </Grid>
-                )}
-
+      {addNewDialogOpen && (
+        <Dialog
+          dialogTitle="Add New Book"
+          open={addNewDialogOpen}
+          setOpen={setAddNewDialogOpen}
+          confirmAction={handleSaveBook}
+          confirmActionLabel={posting ? "Adding..." : "Add Book"}
+          discardActionLabel="Discard"
+        >
+          {/* Dialog Content */}
+          <div>
+            <div className="pb-5">
+              <Text>Fill in info and hit Add New</Text>
+            </div>
+            <Grid container rowSpacing={2} direction="column">
+              <Grid
+                item
+                container
+                sx={12}
+                columnSpacing={2}
+                rowSpacing={2}
+                justifyContent="space-between"
+              >
                 <Grid item sx={12}>
                   <TextField
+                    autoFocus
                     fullWidth
-                    id="borrow-date"
-                    label="Borrowed On"
-                    type="date"
-                    defaultValue="2017-05-24"
-                    sx={{ width: 220 }}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    value={borrowedOn}
-                    onChange={(e) => setBorrowedOn(e.target.value)}
+                    id="book-name"
+                    label="Book Name"
+                    variant="outlined"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                   />
                 </Grid>
                 <Grid item sx={12}>
                   <TextField
                     fullWidth
-                    id="return-date"
-                    label="Expected return date"
-                    type="date"
-                    defaultValue="2017-05-24"
-                    sx={{ width: 220 }}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    value={returnDate}
-                    onChange={(e) => setReturnDate(e.target.value)}
+                    id="author-name"
+                    label="Author Name"
+                    variant="outlined"
+                    value={author}
+                    onChange={(e) => setAuthor(e.target.value)}
                   />
                 </Grid>
               </Grid>
-            )}
-          </Grid>
-        </div>
-      </Dialog>
+              <Grid item sx={12}>
+                <FormGroup>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={available}
+                        onChange={handleAvailableChange}
+                      />
+                    }
+                    label="Available for borrow"
+                  />
+                </FormGroup>
+              </Grid>
+              {!available && (
+                <Grid
+                  item
+                  container
+                  direction="column"
+                  columnSpacing={2}
+                  rowSpacing={3}
+                >
+                  <Grid item sx={12}>
+                    <Typography variant="h2" className="!text-lg">
+                      Borrower Info
+                    </Typography>
+                  </Grid>
+                  <Grid item sx={12}>
+                    <StudentSelect
+                      student={student}
+                      setStudent={setStudent}
+                      setDBStudents={setStudents}
+                    />
+                  </Grid>
+                  {student === "none" && (
+                    <Grid item sx={12}>
+                      <TextField
+                        fullWidth
+                        id="student-name"
+                        label="Student name"
+                        variant="outlined"
+                        value={borrowedBy}
+                        onChange={(e) => setBorrowedBy(e.target.value)}
+                      />
+                    </Grid>
+                  )}
+                  <Grid
+                    item
+                    container
+                    sx={12}
+                    rowSpacing={2}
+                    alignItems="center"
+                    justifyContent="space-between"
+                  >
+                    <Grid item sx={12} sm={6} className="!min-w-full">
+                      <TextField
+                        fullWidth
+                        id="borrow-date"
+                        label="Borrowed On"
+                        type="date"
+                        defaultValue="2017-05-24"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        value={borrowedOn}
+                        onChange={(e) => setBorrowedOn(e.target.value)}
+                      />
+                    </Grid>
+                    <Grid item sx={12} sm={6} className="!min-w-full">
+                      <TextField
+                        fullWidth
+                        id="return-date"
+                        label="Expected return date"
+                        type="date"
+                        defaultValue="2017-05-24"
+                        sx={{ width: "100%" }}
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        value={returnDate}
+                        onChange={(e) => setReturnDate(e.target.value)}
+                      />
+                    </Grid>
+                  </Grid>
+                </Grid>
+              )}
+            </Grid>
+          </div>
+        </Dialog>
+      )}
     </div>
   );
 };

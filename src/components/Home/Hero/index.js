@@ -9,7 +9,7 @@ const Hero = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-80px)]">
       <Heading type="secondary" className="text-secondaryText">
-        Welcome to APS Library
+        Welcome to MERN Library
       </Heading>
       <Heading className="mt-5 text-primary flex items-center space-x-2 md:space-x-4 text-shadow">
         <span>Read</span>

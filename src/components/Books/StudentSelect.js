@@ -44,7 +44,7 @@ export default function SelectLabels({ student, setStudent, setDBStudents }) {
   };
 
   return (
-    <FormControl sx={{ minWidth: "350px", maxWidth: "90vw" }}>
+    <FormControl fullWidth>
       <InputLabel id="demo-simple-select-helper-label">
         Select Student
       </InputLabel>
@@ -69,7 +69,7 @@ export default function SelectLabels({ student, setStudent, setDBStudents }) {
           ))}
       </Select>
       <FormHelperText>
-        Select student, or enter manually from below
+        Select student, or enter borrower manually below
       </FormHelperText>
     </FormControl>
   );

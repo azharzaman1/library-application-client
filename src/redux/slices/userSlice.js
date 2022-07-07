@@ -36,7 +36,7 @@ export const userSlice = createSlice({
           ? "Admin"
           : action?.payload?.includes(userRoles.Student)
           ? "Student"
-          : action?.payload?.includes(userRoles.Student) &&
+          : action?.payload?.includes(userRoles.User) &&
             !action?.payload?.includes(userRoles.Admin) &&
             !action?.payload?.includes(userRoles.Student)
           ? "User"
