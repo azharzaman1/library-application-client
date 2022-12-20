@@ -5,7 +5,7 @@ const environment = process.env.NODE_ENV;
 export default axios.create({
   baseURL:
     environment === "production"
-      ? "https://library-app-server.herokuapp.com/"
+      ? "https://libarary-application-backend.adaptable.app/"
       : "http://localhost:3500/",
   headers: {
     "Content-Type": "application/json",
@@ -15,7 +15,7 @@ export default axios.create({
 export const axiosPrivate = axios.create({
   baseURL:
     environment === "production"
-      ? "https://library-app-server.herokuapp.com/"
+      ? "https://libarary-application-backend.adaptable.app/"
       : "http://localhost:3500/",
   headers: {
     "Content-Type": "application/json",
