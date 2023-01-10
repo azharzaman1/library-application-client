@@ -4,6 +4,7 @@ import useAuth from "../../hooks/useAuth";
 import useRefreshToken from "../../hooks/useRefreshToken";
 import { useDispatch, useSelector } from "react-redux";
 import { selectSessionPersist } from "../../redux/slices/userSlice";
+import Loader from "../Generic/Loader";
 
 const PersistLogin = () => {
   const dispatch = useDispatch();
@@ -37,7 +38,9 @@ const PersistLogin = () => {
       {!persistSession ? (
         <Outlet />
       ) : isLoading ? (
-        <div>Loading...</div>
+        <div className="min-h-[calc(100vh-100px)] flex items-center justify-center">
+          <Loader />
+        </div>
       ) : (
         <Outlet />
       )}

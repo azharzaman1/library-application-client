@@ -41,7 +41,7 @@ const StudentActions = ({ student, setStudent }) => {
     {
       onSuccess: (res) => {
         console.log("Update student response", res);
-        enqueueSnackbar(res.statusText, {
+        enqueueSnackbar("Student Record Updated", {
           variant: "success",
         });
         resetForm();
@@ -57,9 +57,8 @@ const StudentActions = ({ student, setStudent }) => {
         }
       },
       onError: (err) => {
-        const statusText = err.response.statusText;
         setUpdating(false);
-        enqueueSnackbar(statusText, {
+        enqueueSnackbar("Student Record Update Failed", {
           variant: "error",
         });
       },
@@ -84,7 +83,7 @@ const StudentActions = ({ student, setStudent }) => {
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  // react-query student student
+  // react-query delete student
   const { mutate: deleteStudent } = useMutation(
     async () => {
       return await axiosPrivate.delete(
@@ -94,7 +93,7 @@ const StudentActions = ({ student, setStudent }) => {
     {
       onSuccess: (res) => {
         console.log("Delete Students response", res);
-        enqueueSnackbar(res.statusText, {
+        enqueueSnackbar("Student Record Deleted", {
           variant: "success",
         });
         setDeleteDialogOpen(false);
@@ -104,10 +103,9 @@ const StudentActions = ({ student, setStudent }) => {
         navigate(`/students`, { replace: true });
       },
       onError: (err) => {
-        const statusText = err.response.statusText;
         setUpdating(false);
         setDeleteDialogOpen(false);
-        enqueueSnackbar(statusText, {
+        enqueueSnackbar("Student Record Delete Failed", {
           variant: "error",
         });
       },

@@ -11,7 +11,7 @@ const useLogout = () => {
     try {
       const response = await axiosPrivate.get("/auth/logout");
       dispatch(LOGOUT());
-      enqueueSnackbar(response.statusText, { variant: "success" });
+      enqueueSnackbar("Logout Successful", { variant: "success" });
     } catch (err) {
       console.log(err);
     }

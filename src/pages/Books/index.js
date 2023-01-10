@@ -85,9 +85,8 @@ const Books = () => {
         setPosting(false);
       },
       onError: (err) => {
-        const statusText = err.response.statusText;
         setPosting(false);
-        enqueueSnackbar(statusText, {
+        enqueueSnackbar("Unable to Retrieve Book Records", {
           variant: "error",
         });
       },
@@ -98,7 +97,7 @@ const Books = () => {
     fetchBooks();
   }, [reRunEffect, fetchBooks]);
 
-  // react-query post student
+  // react-query post book
   const { mutate: postBook } = useMutation(
     async (bookData) => {
       return await axiosPrivate.post("/api/v1/books", bookData);
@@ -106,7 +105,7 @@ const Books = () => {
     {
       onSuccess: (res) => {
         console.log("Post book response", res);
-        enqueueSnackbar(res.statusText, {
+        enqueueSnackbar("Book Record Added", {
           variant: "success",
         });
         resetForm();
@@ -123,9 +122,8 @@ const Books = () => {
         fetchBooks();
       },
       onError: (err) => {
-        const statusText = err.response.statusText;
         setPosting(false);
-        enqueueSnackbar(statusText, {
+        enqueueSnackbar("Unable to Add Book Record", {
           variant: "error",
         });
       },
@@ -167,8 +165,9 @@ const Books = () => {
         setStudent("none");
       },
       onError: (err) => {
-        const statusText = err.response.statusText;
-        console.log(statusText);
+        enqueueSnackbar("Student Record Update Failed", {
+          variant: "error",
+        });
       },
     }
   );
@@ -197,7 +196,7 @@ const Books = () => {
         <Box sx={{ flexGrow: 1 }}>
           <AppBar
             position="static"
-            className="mt-8 rounded-md"
+            className="mt-8 rounded-md !bg-gray-200"
             color="secondary"
           >
             <Toolbar className="flex items-center">

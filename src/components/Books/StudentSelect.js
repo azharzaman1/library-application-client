@@ -31,8 +31,7 @@ export default function SelectLabels({ student, setStudent, setDBStudents }) {
         setStudents(dropdownData);
       },
       onError: (err) => {
-        const statusText = err.response.statusText;
-        enqueueSnackbar(statusText, {
+        enqueueSnackbar("Unable to Retrieve Student Records", {
           variant: "error",
         });
       },

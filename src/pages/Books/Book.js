@@ -13,6 +13,7 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { selectUserType } from "../../redux/slices/userSlice";
 import { parseISOString } from "../../utils";
 import { useNavigate } from "react-router-dom";
+import Loader from "../../components/Generic/Loader";
 
 const Book = () => {
   const userType = useSelector(selectUserType);
@@ -36,8 +37,7 @@ const Book = () => {
         setBook(res.data.found);
       },
       onError: (err) => {
-        const statusText = err.response.statusText;
-        enqueueSnackbar(statusText, {
+        enqueueSnackbar("Unable Retrieve Book Record", {
           variant: "error",
         });
       },
@@ -58,7 +58,11 @@ const Book = () => {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-[calc(100vh-100px)] flex items-center justify-center">
+        <Loader />
+      </div>
+    );
   }
 
   if (!book) {
@@ -66,7 +70,12 @@ const Book = () => {
   }
 
   return (
-    <div className="pt-2">
+    <div
+      className="min-h-screen"
+      style={{
+        backgroundImage: `url(https://i.ibb.co/hFh0JGk/white-waves.png)`,
+      }}
+    >
       <Container maxWidth={false}>
         <div className="">
           <div
@@ -128,7 +137,7 @@ const Book = () => {
             </Grid>
             {isBorrowed && userType === "Admin" ? (
               <Grid item xs={12} sm={10} md={5}>
-                <div className="flex flex-col px-2 py-3 border-2 rounded-md border-gray-200 bg-gray-100 shadow-sm lg:max-w-sm">
+                <div className="flex flex-col px-2 py-3 border-2 rounded-md border-gray-200 bg-white bg-opacity-75 shadow-sm lg:max-w-sm">
                   <Heading type="secondary">Borrow History</Heading>
                   <Divider className="py-1" />
                   <Heading type="tertiary" className="mt-2">

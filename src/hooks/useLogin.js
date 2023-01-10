@@ -19,7 +19,7 @@ const useLogin = () => {
     {
       onSuccess: (res) => {
         console.log("User login response", res);
-        enqueueSnackbar(res.statusText, {
+        enqueueSnackbar("Login Successful", {
           variant: "success",
         });
         const roles = Object.values(res.data.user.roles);
@@ -29,9 +29,8 @@ const useLogin = () => {
         dispatch(SET_USER_TYPE(roles));
       },
       onError: (err) => {
-        const statusText = err.response.statusText;
         setLoading(false);
-        enqueueSnackbar(statusText, {
+        enqueueSnackbar("Login Failed", {
           variant: "error",
         });
       },

@@ -43,4 +43,4 @@ code {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import "./styles/taiolwind-extended.css";
+@import "./styles/tailwind-extended.css";

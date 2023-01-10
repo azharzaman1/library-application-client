@@ -52,9 +52,8 @@ const Students = () => {
         setPosting(false);
       },
       onError: (err) => {
-        const statusText = err.response.statusText;
         setPosting(false);
-        enqueueSnackbar(statusText, {
+        enqueueSnackbar("Unable to Retrieve Student Records", {
           variant: "error",
         });
       },
@@ -75,7 +74,7 @@ const Students = () => {
         console.log("Post student response", res);
         await fetchStudents();
         queryClient.invalidateQueries("query-students");
-        enqueueSnackbar(res.statusText, {
+        enqueueSnackbar("Student Record Added", {
           variant: "success",
         });
         resetForm();
@@ -83,9 +82,8 @@ const Students = () => {
         setAddNewDialogOpen(false);
       },
       onError: (err) => {
-        const statusText = err.response.statusText;
         setPosting(false);
-        enqueueSnackbar(statusText, {
+        enqueueSnackbar("Unable to Add Student Record", {
           variant: "error",
         });
       },
@@ -127,7 +125,7 @@ const Students = () => {
         <Box sx={{ flexGrow: 1 }}>
           <AppBar
             position="static"
-            className="mt-8 rounded-md"
+            className="mt-8 rounded-md !bg-gray-200"
             color="secondary"
           >
             <Toolbar className="flex items-center">

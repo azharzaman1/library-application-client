@@ -9,7 +9,7 @@ const Hero = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-80px)]">
       <Heading type="secondary" className="text-secondaryText">
-        Welcome to MERN Library
+        Welcome to <span className="text-primary">MERN</span> Library
       </Heading>
       <Heading className="mt-5 text-primary flex items-center space-x-2 md:space-x-4 text-shadow">
         <span>Read</span>
@@ -22,10 +22,10 @@ const Hero = () => {
         {currentUser ? (
           <>
             <Link to="/books">
-              <Button variant="contained">List of Books</Button>
+              <Button variant="contained">Books</Button>
             </Link>
             <Link to="/students">
-              <Button variant="contained">List of Students</Button>
+              <Button variant="contained">Students (Admin Only)</Button>
             </Link>
           </>
         ) : (

@@ -64,7 +64,7 @@ const BookActions = ({ book, setBook }) => {
     {
       onSuccess: (res) => {
         console.log("Update Book Response", res);
-        enqueueSnackbar(res.statusText, {
+        enqueueSnackbar("Book Updated", {
           variant: "success",
         });
         resetForm();
@@ -80,9 +80,8 @@ const BookActions = ({ book, setBook }) => {
         }
       },
       onError: (err) => {
-        const statusText = err.response.statusText;
         setUpdating(false);
-        enqueueSnackbar(statusText, {
+        enqueueSnackbar("Book Record Update Failed", {
           variant: "error",
         });
       },
@@ -117,7 +116,7 @@ const BookActions = ({ book, setBook }) => {
     {
       onSuccess: (res) => {
         console.log("Delete Book Response", res);
-        enqueueSnackbar(res.statusText, {
+        enqueueSnackbar("Book Deleted Successfully", {
           variant: "success",
         });
         setDeleteDialogOpen(false);
@@ -127,10 +126,9 @@ const BookActions = ({ book, setBook }) => {
         navigate(`/books`, { replace: true });
       },
       onError: (err) => {
-        const statusText = err.response.statusText;
         setUpdating(false);
         setDeleteDialogOpen(false);
-        enqueueSnackbar(statusText, {
+        enqueueSnackbar("Book Record Delete Failed", {
           variant: "error",
         });
       },

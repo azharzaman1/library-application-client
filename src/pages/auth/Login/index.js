@@ -16,16 +16,16 @@ import {
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
-import { axiosPrivate } from "../../../api/axios";
 import { useSnackbar } from "notistack";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import {
   selectSessionPersist,
   SET_SESSION_PERSIST,
   SET_USER,
   SET_USER_TYPE,
 } from "../../../redux/slices/userSlice";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { axiosPrivate } from "../../../api/axios";
 import Heading from "../../../components/Generic/Heading";
 import Container from "../../../components/Generic/Layout/Container";
 import Text from "../../../components/Generic/Text";
@@ -40,7 +40,6 @@ const Login = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
-  console.log(location.state?.from?.pathname);
   const from = location.state?.from?.pathname || "/";
   const { enqueueSnackbar } = useSnackbar();
 
@@ -52,7 +51,7 @@ const Login = () => {
     {
       onSuccess: (res) => {
         console.log("User login response", res);
-        enqueueSnackbar(res.statusText, {
+        enqueueSnackbar("Login Successful", {
           variant: "success",
         });
         resetForm();
@@ -65,9 +64,8 @@ const Login = () => {
         res.status === 202 && navigate(from, { replace: true });
       },
       onError: (err) => {
-        const statusText = err.response.statusText;
         setLoggingIn(false);
-        enqueueSnackbar(statusText, {
+        enqueueSnackbar("Login Failed", {
           variant: "error",
         });
       },

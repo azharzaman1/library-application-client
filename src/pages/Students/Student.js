@@ -12,6 +12,7 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { getRandomInt, parseISOString } from "../../utils";
 import { selectUserType } from "../../redux/slices/userSlice";
 import { useSelector } from "react-redux";
+import Loader from "../../components/Generic/Loader";
 
 const Student = () => {
   const [student, setStudent] = useState({});
@@ -23,7 +24,7 @@ const Student = () => {
   const axiosPrivate = useAxiosPrivate();
   const { enqueueSnackbar } = useSnackbar();
 
-  // fetching book info from database
+  // fetching student info from database
   const { isLoading, refetch: fetchStudent } = useQuery(
     "query-student-by-slug",
     async () => {
@@ -38,8 +39,7 @@ const Student = () => {
         setStudent(res.data.found);
       },
       onError: (err) => {
-        const statusText = err.response.statusText;
-        enqueueSnackbar(statusText, {
+        enqueueSnackbar("Unable to Retrieve Student Record", {
           variant: "error",
         });
       },
@@ -50,7 +50,7 @@ const Student = () => {
     fetchStudent();
   }, [reRunEffect, fetchStudent]);
 
-  // react-query update student
+  // react-query user books fetch
   const { mutate: fetchUserBooks } = useMutation(
     async (booksIDs) => {
       return await axiosPrivate.post(`/api/v1/books/many`, booksIDs);
@@ -61,14 +61,19 @@ const Student = () => {
         setBooks(res.data.result);
       },
       onError: (err) => {
-        const statusText = err.response.statusText;
-        console.log(statusText);
+        enqueueSnackbar("Unable Retrieve Student Book Records", {
+          variant: "error",
+        });
       },
     }
   );
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-[calc(100vh-100px)] flex items-center justify-center">
+        <Loader />
+      </div>
+    );
   }
 
   if (!student) {
@@ -76,7 +81,12 @@ const Student = () => {
   }
 
   return (
-    <div className="pt- pb-10">
+    <div
+      className="min-h-screen"
+      style={{
+        backgroundImage: `url(https://i.ibb.co/hFh0JGk/white-waves.png)`,
+      }}
+    >
       <Container maxWidth={false}>
         <div className="">
           <div
@@ -147,7 +157,7 @@ const Student = () => {
               <>
                 {student?.borrowedBooks?.length > 0 && (
                   <Grid item xs={12} sm={10} md={5}>
-                    <div className="flex flex-col px-3 py-3 border-2 rounded-md border-gray-100 bg-secondary bg-opacity-25 shadow lg:max-w-md">
+                    <div className="flex flex-col px-3 py-3 border-2 rounded-md border-gray-100 bg-white bg-opacity-75 shadow lg:max-w-md">
                       <Heading type="secondary">Borrowed Books</Heading>
                       <div className="mt-4 w-full">
                         {books?.length > 0 &&

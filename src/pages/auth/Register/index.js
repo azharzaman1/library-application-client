@@ -37,7 +37,7 @@ const Register = () => {
     {
       onSuccess: (res) => {
         console.log("User register response", res);
-        enqueueSnackbar(res.statusText, {
+        enqueueSnackbar("User Registered", {
           variant: "success",
         });
         resetForm();
@@ -46,9 +46,8 @@ const Register = () => {
         res.status === 201 && navigate("/auth/login", { replace: true });
       },
       onError: (err) => {
-        const statusText = err.response.statusText;
         setRegistering(false);
-        enqueueSnackbar(statusText, {
+        enqueueSnackbar("Unable to Register User", {
           variant: "error",
         });
       },
